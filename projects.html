@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets - Romain Sebire</title>
+    <link rel="icon" href="images/rssansfond.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="scripts.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <div id="header-placeholder"></div>
+    </header>
+
+    <main>
+        <section class="projects-section">
+            <div class="project-card summary-card">
+                <div class="project-layout">
+                    <div class="project-content">
+                        <h2>Vue d’ensemble de mes projets</h2>
+                        <p>Voici un aperçu synthétique de mes principaux projets en data science, couvrant des domaines
+                            variés tels que la santé, les transports, la finance, l’immobilier et les systèmes de
+                            recommandation.</p>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom du projet</th>
+                                    <th>Type</th>
+                                    <th>Domaine</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-target="#projet-sales" style="cursor:pointer;">
+                                    <td>Prévision des ventes de magasins (Time Series Forecasting)</td>
+                                    <td>Régression temporelle</td>
+                                    <td>Grande distribution</td>
+                                </tr>
+                                <tr data-target="#projet-bus" style="cursor:pointer;">
+                                    <td>Prédiction de la localisation des bus à Rio</td>
+                                    <td>Régression spatio-temporelle</td>
+                                    <td>Transports</td>
+                                </tr>
+                                <tr data-target="#projet-obesity" style="cursor:pointer;">
+                                    <td>Prédiction du risque d’obésité</td>
+                                    <td>Classification</td>
+                                    <td>Santé</td>
+                                </tr>
+                                <tr data-target="#projet-credit" style="cursor:pointer;">
+                                    <td>Approbation de crédits bancaires</td>
+                                    <td>Classification</td>
+                                    <td>Finance</td>
+                                </tr>
+                                <tr data-target="#projet-realestate" style="cursor:pointer;">
+                                    <td>Estimation du prix de biens immobiliers</td>
+                                    <td>Régression multivariée</td>
+                                    <td>Immobilier</td>
+                                </tr>
+                                <tr data-target="#projet-movielens" style="cursor:pointer;">
+                                    <td>Système de recommandation de films</td>
+                                    <td>Clustering</td>
+                                    <td>Média / Recommandation</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="projet-sales" class="project-card" data-expanded="false">
+                <h2 class="project-title">Prévision des ventes de magasins par séries temporelles (Time Series
+                    Forecasting)</h2>
+                <div class="project-layout">
+                    <div class="project-content">
+                        <p>L’objectif de ce projet était de construire un modèle capable de prédire
+                            précisement les ventes unitaires de milliers d’articles vendus dans différents magasins d'un
+                            grand
+                            distributeur
+                            alimentaire basé en Équateur (Corporación Favorita).</p>
+
+                        <p>L’approche a consisté à intégrer plusieurs sources hétérogènes (ventes passées,
+                            caractéristiques
+                            des magasins et produits, cours du pétrole, jours fériés, événements exceptionnels, jours de
+                            paie)
+                            afin d’enrichir un modèle de séries temporelles. Après un important travail de feature
+                            engineering
+                            (imputation par régression, croisement géographique des jours fériés, etc.), le modèle a
+                            atteint une
+                            performance
+                            solide sur les deux semaines de prévision cible.</p>
+
+                        <div class="details">
+                            <p><strong>Données</strong></p>
+                            <ul>
+                                <li>Données principales : séries temporelles de ventes par magasin et famille
+                                    de produits, incluant les promotions (entre janvier 2013 et juillet 2017).</li>
+                                <li>Données complémentaires : métadonnées des magasins (ville, type, cluster),
+                                    prix du pétrole brut, jours fériés et événements spéciaux, nombre
+                                    de transactions par magasin et par jour.</li>
+                                <li>Contexte économique : salaires publics versés deux fois par mois (le 15 et
+                                    le dernier jour) et impact d’un séisme majeur sur les ventes en avril 2016.</li>
+                            </ul>
+
+                            <p><strong>Étapes principales</strong></p>
+                            <ol>
+                                <li>Chargement des données et concaténation des dataframes</li>
+                                <li>Enrichissement contextuel (feature engineering)</li>
+                                <li>Analyse exploratoire des données (EDA)</li>
+                                <li>Imputation des valeurs manquantes</li>
+                                <li>Entrainement des premiers modèles</li>
+                                <ul>
+                                    <li>LightGBM : RMSLE = 0.5674</li>
+                                    <li>RandomForestRegressor : RMSLE = 0.4956 (plus performant)</li>
+                                </ul>
+                                <li>Ajout des informations de jours fériés → RF RMSLE = 0.4931</li>
+                                <li>Ajout du prix du pétrole :
+                                    <ul>
+                                        <li>28.52% de données manquantes</li>
+                                        <li>Imputation des valeurs manquantes par interpolation</li>
+                                        <li>RF RMSLE = 0.4737</li>
+                                    </ul>
+                                </li>
+                                <li>Ajout de l'information des paiements (tous les 15 jours) → RF RMSLE = 0.4722</li>
+                            </ol>
+                        </div>
+
+                        <div class="tags">
+                            <span>Pandas</span><span>XGBoost</span><span>RandomForest</span><span>LightGBM</span><span>Scikit-learn</span>
+                        </div>
+                        <ul class="metrics">
+                            <li>
+                                Modèle retenu : RandomForest<br>
+                                Méthode d'évaluation : RMSLE<br>
+                                Score : 0.4722
+                            </li>
+                        </ul>
+                        <div class="links">
+                            <a href="#" class="btn github-btn">
+                                <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.91-.88-1.15-.88-1.15-.72-.49.05-.48.05-.48.8.06 1.22.82 1.22.82.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0016 8c0-4.42-3.58-8-8-8z" />
+                                </svg>
+                                GitHub
+                            </a>
+                            <button class="btn toggle-details">
+                                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span class="toggle-label">En savoir plus</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="project-images">
+                        <img src="images/salesImg1.png" alt="Tendances des ventes mensuelles sur la durée des données"
+                            class="main-image" />
+                        <div class="extra-images">
+                            <img src="images/salesImg2.png" alt="Impact des promotions sur les ventes" />
+                            <img src="images/salesImg3.png" alt="Ventes moyennes par jours de la semaine" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="projet-bus" class="project-card" data-expanded="false">
+                <h2 class="project-title">Prédiction de la localisation des bus à Rio</h2>
+                <div class="project-layout">
+                    <div class="project-content">
+                        <p>L’objectif de ce projet est de nettoyer et structurer une base de données fortement bruitée,
+                            dans le but d’entraîner un modèle capable de prédire la localisation des bus à partir d’un
+                            historique de positions GPS. Deux tâches de prévision sont abordées :
+                        <ul>
+                            <li>Prédire le moment d’arrivée d’un bus à un lieu donné, à partir d’une série historique de
+                                positions GPS horodatées.</li>
+                            <li>Estimer la position d’un bus à partir d’un horodatage spécifique.</li>
+                        </ul>
+                        </p>
+                        <p>Dans ce projet, j’ai conçu un pipeline complet de traitement et
+                            d’analyse de données GPS brutes (plus de 50 Go). Les données, très bruitées et souvent
+                            incohérentes (positions erronées, GPS actifs en dépôt, horaires incorrects), ont été
+                            nettoyées, filtrées et structurées dans une base PostgreSQL. J’ai identifié les trajets
+                            réels, les terminaux, les dépôts, et attribué dynamiquement le sens de circulation à chaque
+                            véhicule. À partir de cette base fiable, j’ai segmenté les trajets en tronçons homogènes et
+                            calculé les vitesses moyennes pour modéliser les conditions de circulation. L’ensemble du
+                            travail a permis de poser les fondations d’un modèle de prédiction spatio-temporelle capable
+                            d’estimer la position d’un bus à un instant donné ou son temps d’arrivée à un arrêt. Ce
+                            projet a permis de combiner data engineering, analyse géospatiale et machine learning dans
+                            un contexte réel à grande échelle.</p>
+
+                        <div class="details">
+                            <p><strong>Données</strong></p>
+                            <p>Les données exploitées dans ce projet proviennent de capteurs GPS embarqués dans les bus
+                                de Rio de Janeiro. Chaque enregistrement représente une position géographique à un
+                                instant donné, enrichie de plusieurs métadonnées. Voici les principales variables
+                                disponibles (les noms des variables sont en portugais): </p>
+                            <ul>
+                                <li>ordem : identifiant unique du véhicule, permettant de suivre chaque bus
+                                    individuellement.</li>
+                                <li>latitude / longitude : coordonnées GPS du bus, exprimées en degrés décimaux.</li>
+                                <li>datahora : horodatage du point GPS (timestamp en millisecondes), correspondant à
+                                    l’heure
+                                    de capture du signal.</li>
+                                <li>velocidade : vitesse instantanée du bus en km/h.</li>
+                                <li>linha : numéro de la ligne de bus empruntée (ex. 483).</li>
+                                <li>datahoraenvio : heure à laquelle le signal GPS a été envoyé au serveur.</li>
+                                <li>datahoraservidor : heure d’enregistrement du signal par le serveur (considérée
+                                    comme la plus fiable pour les analyses temporelles).</li>
+                            </ul>
+                            <p>Au total, plus de 50Go de données allant du 25 avril au 10 mai 2024 (16 jours de données)
+                            </p>
+
+                            <p><strong>Étapes principales</strong></p>
+                            <ol>
+                                <li>Importation des données dans une base PostgreSQL</li>
+                                <li>Nettoyage et structuration :
+                                    <ul>
+                                        <li>Suppression des points incohérents (hors de Rio, avec des vitesses trop
+                                            élevées ou négatives…)</li>
+                                        <li>Conversion des timestamps et des colonnes latitude/longitude en points GPS
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Analyse exploratoire des données GPS (EDA)</li>
+                                <li>Identification des dépôts où stationnent les bus la nuit :
+                                    <ul>
+                                        <li>Par temps d’arrêt longs en dehors des heures de circulation</li>
+                                    </ul>
+                                </li>
+                                <li>Identification des trajets de chaque ligne :
+                                    <ul>
+                                        <li>Interpolation pour recréer une densité de points dans les zones à
+                                            circulation rapide. La période d’émission des données étant fixe, lorsque le
+                                            bus roule plus vite, les points GPS sont plus espacés.</li>
+                                    </ul>
+                                </li>
+                                <li>Identification des terminaux de toutes les lignes :
+                                    <ul>
+                                        <li>Par temps d’arrêt longs et répétés dans une journée, qui ne correspondent
+                                            pas à des dépôts</li>
+                                    </ul>
+                                </li>
+                                <li>Attribution du sens de circulation (aller/retour) à chaque point GPS d’une ligne :
+                                    <ul>
+                                        <li>Voir les trajets bleus/rouges sur l’image (ligne 483)</li>
+                                    </ul>
+                                </li>
+                                <li>Modélisation de la vitesse moyenne sur les tronçons partagés :
+                                    <ul>
+                                        <li>Découpage en tronçons homogènes (environ 250 m) de l’ensemble des routes
+                                            parcourues par au moins une ligne de bus</li>
+                                        <li>Calcul des vitesses moyennes par tronçon (voir la dernière image)</li>
+                                    </ul>
+                                </li>
+                                <li>Création de features à partir des données structurées et du modèle de vitesse pour
+                                    préparer l'entrainement d'un modèle</li>
+                            </ol>
+                        </div>
+
+                        <div class="tags">
+                            <span>PostGreSQL</span><span>Pandas</span><span>Scikit-learn</span><span>Folium</span><span>WGS84</span>
+                        </div>
+                        <ul class="metrics">
+                            <li>
+                                Construction d'une base de données SQL<br>
+                                Données nettoyées et prête pour l'entrainement d'un modèle<br>
+                                Données traitées : 50 Go
+                            </li>
+                        </ul>
+                        <div class="links">
+                            <a href="#" class="btn github-btn">
+                                <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.91-.88-1.15-.88-1.15-.72-.49.05-.48.05-.48.8.06 1.22.82 1.22.82.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0016 8c0-4.42-3.58-8-8-8z" />
+                                </svg>
+                                GitHub
+                            </a>
+                            <button class="btn toggle-details">
+                                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span class="toggle-label">En savoir plus</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="project-images">
+                        <img src="images/busImg1.png"
+                            alt="Cartes des points de données brutes zoomée sur le quartier de Copacabana"
+                            class="main-image" />
+                        <div class="extra-images">
+                            <img src="images/busImg2.png"
+                                alt="Carte de toutes les lignes avec leurs terminaux identifiés" />
+                            <img src="images/busImg3.png"
+                                alt="Carte de la ligne 483 avec ses terminaux et son iténiraire avec en rouge le sens aller et en bleu le sens retour" />
+                            <img src="images/busImg4.png"
+                                alt="Carte des troncons avec un code couleurs du vert au orange pour les vitesses moyennes sur ces troncons" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="projet-obesity" class="project-card" data-expanded="false">
+                <h2 class="project-title">Prédiction du risque d’obésité pour prévenir les maladies cardiovasculaires
+                </h2>
+                <div class="project-layout">
+                    <div class="project-content">
+                        <p>Projet de classification visant à prédire le risque d’obésité à partir de données de
+                            santé et de mode de vie. Ce risque est fortement corrélé aux maladies cardiovasculaires, ce
+                            qui rend la prédiction pertinente sur le plan médical et préventif.</p>
+
+                        <p>Après un travail de feature engineering (notamment la création de l’IMC), plusieurs modèles
+                            ont été testés et comparés. L’algorithme XGBoost optimisé s’est imposé comme le plus
+                            performant, atteignant une précision de 91,26 %.</p>
+
+                        <div class="details">
+                            <p><strong>Données</strong></p>
+                            <ul>
+                                <li>Variables personnelles : âge, sexe, taille, poids, antécédents familiaux d’obésité
+                                </li>
+                                <li>Habitudes alimentaires : consommation d'aliments riches en calories (FAVC),
+                                    consommation d’eau (CH2O), consommation de légumes (FCVC), nombre de repas par jour
+                                    (NCP), consommation d'alcool (CALC), grignotage entre les repas (CAEC)</li>
+                                <li>Habitudes de vie : tabagisme, suivi de la consommation calorique (SCC),
+                                    fréquence d'activité physique (FAF), temps passé devant les écrans (TUE), moyens de
+                                    transport utilisés</li>
+                            </ul>
+
+                            <p><strong>Étapes principales</strong></p>
+                            <ol>
+                                <li>Prétraitement des données :
+                                    <ul>
+                                        <li>Nettoyage des valeurs manquantes</li>
+                                        <li>Encodage des variables catégorielles</li>
+                                        <li>Normalisation des variables numériques</li>
+                                    </ul>
+                                </li>
+                                <li>Feature engineering :
+                                    <ul>
+                                        <li>Création de l’IMC à partir du poids et de la taille</li>
+                                        <li>Analyse de l’importance des variables</li>
+                                    </ul>
+                                </li>
+                                <li>Modélisation :
+                                    <ul>
+                                        <li>Comparaison de Random Forest, SVM et XGBoost</li>
+                                        <li>Optimisation des hyperparamètres avec GridSearchCV</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="tags">
+                            <span>Pandas</span><span>NumPy</span><span>Scikit-learn</span><span>SVM</span><span>RandomForest</span><span>XGBoost</span><span>GridSearchCV</span><span>Matplotlib</span><span>Seaborn</span>
+                        </div>
+                        <ul class="metrics">
+                            <li>
+                                Modèle retenu : XGBoost<br>
+                                Méthode d'évaluation : Accuracy<br>
+                                Score : 91.26 %
+                            </li>
+                        </ul>
+                        <div class="links">
+                            <a href="#" class="btn github-btn">
+                                <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.91-.88-1.15-.88-1.15-.72-.49.05-.48.05-.48.8.06 1.22.82 1.22.82.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0016 8c0-4.42-3.58-8-8-8z" />
+                                </svg>
+                                GitHub
+                            </a>
+                            <button class="btn toggle-details">
+                                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span class="toggle-label">En savoir plus</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="project-images">
+                        <img src="images/obesityImg1.png" alt="Distribution du nombre d'individus par valeur d'IMC"
+                            class="main-image" />
+                        <div class="extra-images">
+                            <img src="images/obesityImg2.png" alt="Importance des variables dans le modèle XGBoost" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="projet-credit" class="project-card" data-expanded="false">
+                <h2 class="project-title">Classification pour l’approbation de crédits bancaires</h2>
+                <div class="project-layout">
+                    <div class="project-content">
+                        <p>Projet de classification visant à prédire la capacité de remboursement d’un crédit
+                            bancaire à partir des informations personnelles, professionnelles et financières des
+                            demandeurs. Après un travail de préparation des données (nettoyage, imputation, encodage) et
+                            l’entraînement de plusieurs modèles, l’algorithme LightGBM optimisé par RandomizedSearchCV a
+                            obtenu les meilleures performances.</p>
+
+                        <p>Ce projet m’a permis de mettre en œuvre un pipeline complet de machine learning, depuis
+                            l’analyse exploratoire jusqu’à l’optimisation fine des hyperparamètres, en passant par le
+                            traitement des valeurs manquantes et la sélection des variables les plus influentes.</p>
+
+                        <div class="details">
+                            <p><strong>Données</strong></p>
+                            <ul>
+                                <li>Variables personnelles : âge, sexe, situation familiale, nombre de dépendants</li>
+                                <li>Variables professionnelles : métier, ancienneté, statut de propriétaire, type de
+                                    résidence</li>
+                                <li>Informations financières : revenus réguliers et supplémentaires, patrimoine
+                                    personnel, nombre de comptes bancaires</li>
+                                <li>Comportements bancaires : possession de cartes, téléphone,
+                                    email, statut de travail</li>
+                                <li>Cible : statut d’inadmissibilité au crédit (variable inadimplente)</li>
+                            </ul>
+
+                            <p><strong>Étapes principales</strong></p>
+                            <ol>
+                                <li>Importation des bibliothèques et des données</li>
+                                <li>Analyse exploratoire des données (EDA)</li>
+                                <li>Prétraitement :
+                                    <ul>
+                                        <li>Imputation des valeurs manquantes</li>
+                                        <li>Encodage des variables catégorielles</li>
+                                        <li>Normalisation des variables numériques</li>
+                                    </ul>
+                                </li>
+                                <li>Modélisation :
+                                    <ul>
+                                        <li>Tests de Random Forest (0,5782), XGBoost (0,5896), LightGBM (0,5964)</li>
+                                        <li>Validation croisée (accuracy)</li>
+                                    </ul>
+                                </li>
+                                <li>Calcul de l’importance des variables avec LGBMClassifier</li>
+                                <li>Optimisation :
+                                    <ul>
+                                        <li>Recherche d’hyperparamètres avec RandomizedSearchCV</li>
+                                        <li>Amélioration du score final avec LightGBM : Accuracy =
+                                            0.5996</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="tags">
+                            <span>Pandas</span><span>Scikit-learn</span><span>XGBoost</span><span>LightGBM</span><span>RandomForest</span><span>RandomizedSearchCV</span><span>Matplotlib</span><span>Seaborn</span>
+                        </div>
+                        <ul class="metrics">
+                            <li>
+                                Modèle retenu : LightGBM<br>
+                                Méthode d'évaluation : Accuracy<br>
+                                Score : 0.5996
+                            </li>
+                        </ul>
+                        <div class="links">
+                            <a href="#" class="btn github-btn">
+                                <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.91-.88-1.15-.88-1.15-.72-.49.05-.48.05-.48.8.06 1.22.82 1.22.82.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0016 8c0-4.42-3.58-8-8-8z" />
+                                </svg>
+                                GitHub
+                            </a>
+                            <button class="btn toggle-details">
+                                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span class="toggle-label">En savoir plus</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="project-images">
+                        <img src="images/creditImg1.png" alt="Distribution des scores de crédit" class="main-image" />
+                        <div class="extra-images">
+                            <img src="images/creditImg2.png" alt="Importance des variables dans LightGBM" />
+                            <img src="images/creditImg3.png" alt="Courbe d’accuracy en validation croisée" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="projet-realestate" class="project-card" data-expanded="false">
+                <h2 class="project-title">Régression multivariée pour l’estimation du prix de biens immobiliers</h2>
+                <div class="project-layout">
+                    <div class="project-content">
+                        <p>L'objectif de ce projet de régression était d'estimer le prix de biens immobiliers à partir
+                            de caractéristiques structurelles (type de bien, surface, nombre de pièces, localisation) et
+                            d’éléments différenciants (piscine, salle de sport, vue sur mer, etc.). L’accent a été mis
+                            sur la gestion des valeurs extrêmes (méthode de Tukey) et l’extraction de mots-clés à partir
+                            d’une variable textuelle.</p>
+
+                        <div class="details">
+                            <p><strong>Données</strong></p>
+                            <ul>
+                                <li>Type de bien : appartement, maison, loft, studio</li>
+                                <li>Localisation : quartier de résidence</li>
+                                <li>Caractéristiques : nombre de chambres, nombre de places de stationnement, surface
+                                    habitable, surface extérieure</li>
+                                <li>Éléments différenciants : piscine, sauna, salle de sport, terrain de sport, salon de
+                                    jeux, vue sur mer, etc.</li>
+                                <li>Variable cible : prix du bien immobilier</li>
+                            </ul>
+
+                            <p><strong>Étapes principales</strong></p>
+                            <ol>
+                                <li>Prétraitement :
+                                    <ul>
+                                        <li>Détection et traitement des outliers via la <strong>méthode de
+                                                Tukey</strong> :
+                                            <ul>
+                                                <li>Calcul des quartiles Q1 et Q3, puis de l’intervalle interquartile
+                                                    (IQR = Q3 - Q1)</li>
+                                                <li>Conservation uniquement des valeurs comprises entre Q1 - 1.5 x IQR
+                                                    et Q3 + 1.5 x IQR</li>
+                                                <li>Permet d’atténuer l’impact des biens atypiques (ex. villas de luxe)
+                                                    ou des erreurs de saisie sur la variable cible “prix”</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Feature engineering :
+                                    <ul>
+                                        <li>Encodage des variables catégorielles</li>
+                                        <li>Normalisation des variables numériques</li>
+                                        <li>Extraction de mots-clés à partir de la variable textuelle “Points en plus”
+                                        </li>
+                                        <li>Transformation en variables indicatrices</li>
+                                    </ul>
+                                </li>
+                                <li>Modélisation :
+                                    <ul>
+                                        <li>Tests de Random Forest, XGBoost, LightGBM</li>
+                                        <li>Validation croisée (RMSPE)</li>
+                                        <li>Importance des variables calculée avec LGBMClassifier</li>
+                                    </ul>
+                                </li>
+                                <li>Optimisation :
+                                    <ul>
+                                        <li>Recherche d’hyperparamètres avec Optuna</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="tags">
+                            <span>Pandas</span><span>NumPy</span><span>Scikit-learn</span><span>XGBoost</span><span>LightGBM</span><span>RandomForest</span><span>Optuna</span><span>Matplotlib</span>
+                        </div>
+                        <ul class="metrics">
+                            <li>
+                                Modèle retenu : LGBMRegressor<br>
+                                Méthode d'évaluation : RMSPE<br>
+                                Score : 0.2527
+                            </li>
+                        </ul>
+                        <div class="links">
+                            <a href="#" class="btn github-btn">
+                                <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.91-.88-1.15-.88-1.15-.72-.49.05-.48.05-.48.8.06 1.22.82 1.22.82.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0016 8c0-4.42-3.58-8-8-8z" />
+                                </svg>
+                                GitHub
+                            </a>
+                            <button class="btn toggle-details">
+                                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span class="toggle-label">En savoir plus</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="project-images">
+                        <img src="images/realestateImg1.png" alt="Distribution des prix immobiliers"
+                            class="main-image" />
+                        <div class="extra-images">
+                            <img src="images/realestateImg2.png"
+                                alt="Distribution des surfaces habitables des bien immobiliers" />
+                            <img src="images/realestateImg3.png" alt="Importance des variables dans LightGBM" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div id="projet-movielens" class="project-card" data-expanded="false">
+                <h2 class="project-title">Système de recommandation de films avec MovieLens1M</h2>
+                <div class="project-layout">
+                    <div class="project-content">
+                        <p>Projet de clustering réalisé sur la base MovieLens1M (plus d’un million de notes de films).
+                            L’objectif était d’identifier des groupes d’utilisateurs et de films à partir de leurs
+                            caractéristiques (genres, notes attribuées, réalisateurs, acteurs principaux) afin de
+                            concevoir un système de recommandation.</p>
+
+                        <p>Des techniques de réduction de dimensionnalité (PCA, SVD) et des algorithmes de clustering
+                            (K-Means, DBSCAN, Agglomerative Clustering) ont été utilisés pour explorer les structures
+                            latentes dans les données et construire un prototype de recommandation basé sur les
+                            similarités.</p>
+
+                        <div class="details">
+                            <p><strong>Données</strong></p>
+                            <ul>
+                                <li>Genres cinématographiques : action, comédie, drame, etc.</li>
+                                <li>Réalisateurs et acteurs principaux</li>
+                                <li>Notes attribuées par les utilisateurs</li>
+                                <li>Profil des utilisateurs : âge, sexe, profession</li>
+                            </ul>
+
+                            <p><strong>Étapes principales</strong></p>
+                            <ol>
+                                <li>Prétraitement des données :
+                                    <ul>
+                                        <li>Nettoyage et transformation des données brutes</li>
+                                        <li>Encodage des variables catégorielles (genres, professions, etc.)</li>
+                                        <li>Normalisation des notes pour corriger les biais de notation</li>
+                                    </ul>
+                                </li>
+                                <li>Réduction de dimensionnalité :
+                                    <ul>
+                                        <li>Application de la PCA pour conserver l’essentiel de la variance</li>
+                                        <li>Application de la SVD pour révéler les structures latentes dans la matrice
+                                            utilisateur-film</li>
+                                    </ul>
+                                </li>
+                                <li>Clustering :
+                                    <ul>
+                                        <li>Tests de K-Means, DBSCAN, Agglomerative Clustering</li>
+                                        <li>Évaluation via des métriques non supervisées (silhouette score)</li>
+                                        <li>Sélection des clusters les plus interprétables</li>
+                                    </ul>
+                                </li>
+                                <li>Analyse des clusters :
+                                    <ul>
+                                        <li>Interprétation des groupes formés (ex. films d’action à gros budget,
+                                            comédies romantiques, etc.)</li>
+                                        <li>Identification de profils d’utilisateurs types selon leurs préférences</li>
+                                        <li>Système de recommandation basé sur
+                                            l’appartenance à un cluster</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="tags">
+                            <span>Pandas</span><span>NumPy</span><span>Scikit-learn</span><span>PCA</span><span>SVD</span><span>K-Means</span><span>DBSCAN</span><span>Agglomerative
+                                Clustering</span><span>Matplotlib</span>
+                        </div>
+                        <ul class="metrics">
+                            <li>
+                                Méthode : Clustering non supervisé<br>
+                                Techniques : PCA, SVD, K-Means, DBSCAN<br>
+                                Base : MovieLens1M (1M+ notes)
+                            </li>
+                        </ul>
+                        <div class="links">
+                            <a href="#" class="btn github-btn">
+                                <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.91-.88-1.15-.88-1.15-.72-.49.05-.48.05-.48.8.06 1.22.82 1.22.82.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0016 8c0-4.42-3.58-8-8-8z" />
+                                </svg>
+                                GitHub
+                            </a>
+                            <button class="btn toggle-details">
+                                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span class="toggle-label">En savoir plus</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="project-images">
+                        <img src="images/movielensImg1.png" alt="Clusters de films selon les genres et les notes"
+                            class="main-image" />
+                        <div class="extra-images">
+                            <img src="images/movielensImg2.png" alt="Réduction de dimensionnalité avec PCA" />
+                            <img src="images/movielensImg3.png" alt="Profil type d’utilisateur par cluster" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <div id="footer-placeholder"></div>
+    </footer>
+</body>
+
+</html>
