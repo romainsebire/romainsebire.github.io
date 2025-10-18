@@ -23,7 +23,7 @@ body {
 
 main {
   background: var(--bg-main);
-  padding: 5rem 1.25rem 1.25rem 1.25rem;
+  padding: 3.5rem 1.25rem 1.25rem 1.25rem;
 }
 
 .footer {
@@ -138,13 +138,13 @@ main {
 
 /* === SECTION PRESENTATION === */
 .presentation {
-  max-width: 800px;
+  max-width: 950px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  text-align: justify;
+  gap: 0.5rem;
+  text-align: center;
 }
 
 .profile-photo {
@@ -166,26 +166,22 @@ main {
   color: var(--text-dark);
 }
 
-.presentation .btn {
+.presentation .btn-presentation {
   padding: 0.8rem 1.6rem;
   font-size: 1.15rem;
-  font-weight: 600;
   border-radius: 8px;
-  text-decoration: none;
-  text-align: center;
   background-color: var(--accent);
   color: var(--bg-white);
-  border: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  margin-block: 2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  margin-block: 1.5rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  text-decoration: none;
 }
 
-.presentation .btn:hover {
+.presentation .btn-presentation:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   background-color: var(--accent-hover);
@@ -202,6 +198,7 @@ main {
 /* === SECTION CV === */
 /* En-tête */
 .cv-header {
+  margin-top: 1rem;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -219,12 +216,12 @@ main {
 }
 
 .cv-download {
+  text-decoration: none;
   white-space: nowrap;
   display: flex;
   align-items: center;
   background: var(--accent);
   color: var(--bg-white);
-  border: none;
   border-radius: 8px;
   padding: 8px 14px;
   cursor: pointer;
@@ -254,6 +251,7 @@ main {
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .cv-contact div {
@@ -335,7 +333,7 @@ main {
 .projects-section {
   background-color: var(--bg-main);
   display: grid;
-  gap: 2rem;
+  gap: 1.5em;
 }
 
 .project-card {
@@ -350,7 +348,7 @@ main {
 
 .details {
   display: none;
-  margin-top: 1em;
+  margin-top: 1rem;
   overflow: hidden;
   transition: max-height 1s ease;
   max-height: 0;
@@ -366,7 +364,7 @@ main {
 }
 
 .project-card h2 {
-  margin-top: 0.5rem;
+  margin-top: 0rem;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -496,7 +494,8 @@ main {
 
 /* Titre */
 .summary-card {
-  padding: 2rem;
+  margin-top: 1rem;
+  padding: 0 1rem;
   border-radius: 10px;
   background-color: var(--bg-white);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -504,7 +503,8 @@ main {
 
 .summary-card h2 {
   font-size: 1.6rem;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
@@ -512,7 +512,7 @@ main {
   text-align: center;
   font-size: 1rem;
   color: #444;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 /* Tableau */
@@ -521,7 +521,7 @@ main {
   margin: 0 auto 1.5rem;
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   font-size: 0.9rem;
   border-radius: 8px;
   overflow: hidden;
@@ -530,7 +530,7 @@ main {
 
 .summary-card th,
 .summary-card td {
-  padding: 0.5rem 0.6rem;
+  padding: 0.6rem 1rem;
   text-align: left;
 }
 
@@ -606,33 +606,9 @@ main {
     justify-content: center;
   }
 
-  .project-card {
-    padding: 1rem;
-  }
-
-  .project-card h2 {
-    font-size: 1.1rem;
-  }
-
-  .project-card p,
-  .project-card li {
-    font-size: 0.8rem;
-    margin: 0.5rem 0;
-  }
-
-  .tags span {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-  }
-
-  .summary-card table {
-    font-size: 0.8rem;
-    max-width: 100%;
-  }
-
   .summary-card th,
   .summary-card td {
-    padding: 0.3rem 0.5rem;
+    padding: 0.7rem 0.8rem;
   }
 
   .project-card p {
@@ -641,11 +617,5 @@ main {
 
   .project-card li {
     text-align: justify;
-  }
-
-  .btn,
-  .toggle-details {
-    font-size: 0.8rem;
-    padding: 0.35rem 0.8rem;
   }
 }
