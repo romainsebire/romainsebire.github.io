@@ -31,6 +31,7 @@ document.querySelectorAll('.toggle-details').forEach(button => {
       // Ouverture : on définit la hauteur exacte
       details.style.display = 'block';
       const height = details.scrollHeight;
+      details.offsetHeight; // force reflow
       details.style.maxHeight = '0'; // reset
       requestAnimationFrame(() => {
         details.style.maxHeight = height + 'px';
@@ -39,6 +40,7 @@ document.querySelectorAll('.toggle-details').forEach(button => {
     } else {
       // Fermeture : on anime vers 0 puis on cache
       details.style.maxHeight = details.scrollHeight + 'px'; // étape intermédiaire
+      details.offsetHeight;
       requestAnimationFrame(() => {
         details.style.maxHeight = '0';
       });
@@ -51,9 +53,6 @@ document.querySelectorAll('.toggle-details').forEach(button => {
     }
   });
 });
-
-
-
 
 document.querySelectorAll('tr[data-target]').forEach(row => {
   row.addEventListener('click', () => {

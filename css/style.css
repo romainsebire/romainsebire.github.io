@@ -204,15 +204,21 @@ main {
   gap: 1rem;
 }
 
-.badge {
-  justify-self: center;
-  font-size: 1.1em;
-  font-weight: bold;
-  background: var(--bg-alt);
-  color: var(--text-dark);
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(44, 44, 44, 0.1);
+.cv-contact {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background: var(--bg-white);
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.cv-contact div {
+  margin: 4px 8px;
 }
 
 .cv-download {
@@ -238,24 +244,6 @@ main {
 
 .cv-download:hover {
   background: var(--accent-hover);
-}
-
-/* Coordonnées */
-.cv-contact {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  background: var(--bg-white);
-  padding: 12px 18px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
-.cv-contact div {
-  margin: 4px 8px;
 }
 
 /* Grid principale */
@@ -336,6 +324,65 @@ main {
   gap: 1.5em;
 }
 
+/* Carte résumé */
+.summary-card {
+  margin-top: 1rem;
+  padding: 0 1rem;
+  border-radius: 10px;
+  background-color: var(--bg-white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card h2 {
+  font-size: 20rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.summary-card p {
+  text-align: center;
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+/* Tableau */
+.summary-card table {
+  max-width: 1100px;
+  margin: 0 auto 1.5rem;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card th,
+.summary-card td {
+  padding: 0.6rem 1rem;
+  text-align: left;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.summary-card thead {
+  background-color: var(--bg-alt);
+  font-weight: 600;
+}
+
+.summary-card tbody tr:nth-child(even) {
+  background-color: #f9f8f6;
+}
+
+.summary-card tbody tr:hover {
+  background-color: #f0ede9;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
 .project-card {
   scroll-margin-top: 80px;
   background-color: var(--bg-white);
@@ -368,6 +415,7 @@ main {
   font-size: 1.25rem;
   font-weight: 600;
 }
+.summary-card h2 { font-size: 1.6rem; }
 
 .project-card p {
   margin: 1rem 0;
@@ -431,7 +479,6 @@ main {
   background-color: #eceae6;
 }
 
-/* GitHub button */
 .github-icon {
   width: 16px;
   height: 16px;
@@ -492,63 +539,6 @@ main {
   gap: 1rem;
 }
 
-/* Titre */
-.summary-card {
-  margin-top: 1rem;
-  padding: 0 1rem;
-  border-radius: 10px;
-  background-color: var(--bg-white);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.summary-card h2 {
-  font-size: 1.6rem;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.summary-card p {
-  text-align: center;
-  font-size: 1rem;
-  color: #444;
-  margin-bottom: 1rem;
-}
-
-/* Tableau */
-.summary-card table {
-  max-width: 1100px;
-  margin: 0 auto 1.5rem;
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.summary-card th,
-.summary-card td {
-  padding: 0.6rem 1rem;
-  text-align: left;
-}
-
-.summary-card thead {
-  background-color: var(--bg-alt);
-  font-weight: 600;
-}
-
-.summary-card tbody tr:nth-child(even) {
-  background-color: #f9f8f6;
-}
-
-.summary-card tbody tr:hover {
-  background-color: #f0ede9;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
 /* === RESPONSIVE === */
 
 @media (max-width: 768px) {
@@ -568,6 +558,10 @@ main {
     display: block;
   }
 
+  .presentation { 
+    text-align: justify;
+  }
+
   .cv-grid {
     display: flex;
     flex-direction: column;
@@ -581,6 +575,21 @@ main {
 
   .cv-download {
     justify-content: center;
+  }
+
+  /* Masque la dernière colonne (thead et tbody) */
+  .summary-table th:last-child,
+  .summary-table td:last-child {
+    display: none;
+  }
+
+  .summary-card th,
+  .summary-card td {
+    padding: 0.5rem 0.8rem;
+  }
+
+  .summary-card h2 { 
+    font-size: 1.4rem; 
   }
 
   .project-layout {
@@ -604,11 +613,6 @@ main {
   .btn {
     width: 100%;
     justify-content: center;
-  }
-
-  .summary-card th,
-  .summary-card td {
-    padding: 0.7rem 0.8rem;
   }
 
   .project-card p {
