@@ -1,0 +1,625 @@
+---
+/**
+ * ChatWidget.astro — Floating chat demo widget.
+ * Renders only when chatbot.enabled === true in src/config/site.ts.
+ * When enabled, clicking the FAB opens a chat pane that POSTs to chatbot.apiUrl.
+ * POST body: { message: string }
+ * Expected response: { reply: string }
+ */
+import { chatbot } from "@config/site";
+import { ChatCircleDots, X, PaperPlaneTilt } from "@phosphor-icons/react";
+import { getLangFromUrl } from "@i18n/ui";
+
+const { enabled, apiUrl } = chatbot;
+const lang = getLangFromUrl(Astro.url);
+const isFr = lang === "fr";
+---
+
+{
+  enabled && (
+    <div class="chat" id="chat-widget" data-api={apiUrl} data-open="false" data-lang={lang}>
+      <button class="chat__fab" id="chat-toggle" aria-label={isFr ? "Ouvrir le chat" : "Open chat"} aria-expanded="false" aria-controls="chat-pane">
+        <ChatCircleDots weight="fill" className="chat__fab-icon" />
+      </button>
+
+      <div class="chat__pane" id="chat-pane" role="dialog" aria-label="Assistant">
+        <header class="chat__head">
+          <span class="chat__head-name">Assistant</span>
+          <button class="chat__close" aria-label={isFr ? "Fermer" : "Close"} id="chat-close">
+            <X weight="bold" />
+          </button>
+        </header>
+
+        <div class="chat__messages" id="chat-messages">
+          <div class="chat__msg chat__msg--bot">
+            {isFr ? "Bonjour, comment puis-je vous aider\u00A0?" : "Hello, how can I help you?"}
+          </div>
+        </div>
+
+        <form class="chat__form" id="chat-form" autocomplete="off">
+          <input class="chat__input" type="text" id="chat-input" name="message" placeholder={isFr ? "Votre message…" : "Your message…"} maxlength="250" required aria-label="Message" />
+          <button class="chat__send btn btn--primary" type="submit" aria-label={isFr ? "Envoyer" : "Send"}>
+            <PaperPlaneTilt weight="fill" />
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  function escapeHtml(str: string): string {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function renderMarkdown(str: string): string {
+    const escaped = escapeHtml(str);
+    return escaped
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  }
+
+  function initChat() {
+    const widget = document.getElementById("chat-widget");
+    if (!widget || widget.dataset.bound === "true") return;
+    widget.dataset.bound = "true";
+
+    const apiUrl = widget.dataset.api ?? "";
+    const lang = widget.dataset.lang ?? "fr";
+    const isFr = lang === "fr";
+
+    // Warmup & Cold-Start tracking
+    let warmupStartTime = Date.now();
+    let isBackendReady = false;
+    let lastBackendReadyTime: number | null = null;
+    const IDLE_TIMEOUT_MS = 14 * 60 * 1000; // 14 minutes Render inactivity limit
+    const ESTIMATED_COLD_START_SEC = 45; // Adjust this value to match your backend's average cold start duration
+
+    const triggerWarmup = () => {
+      if (!apiUrl) return;
+      const now = Date.now();
+      // If idle for more than 14 minutes, reset status so we treat next attempt as potential cold start
+      if (lastBackendReadyTime && now - lastBackendReadyTime > IDLE_TIMEOUT_MS) {
+        isBackendReady = false;
+        lastBackendReadyTime = null;
+        warmupStartTime = now;
+      }
+
+      if (!isBackendReady) {
+        const healthUrl = apiUrl.replace(/\/chat\/?$/, "/health");
+        fetch(healthUrl, { method: "GET" })
+          .then((res) => {
+            if (res.ok) {
+              isBackendReady = true;
+              lastBackendReadyTime = Date.now();
+            }
+          })
+          .catch(() => {});
+      }
+    };
+
+    // Pre-warming ping on page init
+    triggerWarmup();
+
+    let threadId: string | null = sessionStorage.getItem("portfolio_chat_thread_id");
+    const pane = document.getElementById("chat-pane") as HTMLElement;
+    const toggleBtn = document.getElementById("chat-toggle") as HTMLButtonElement;
+    const closeBtn = document.getElementById("chat-close") as HTMLButtonElement;
+    const messages = document.getElementById("chat-messages") as HTMLElement;
+    const form = document.getElementById("chat-form") as HTMLFormElement;
+    const input = document.getElementById("chat-input") as HTMLInputElement;
+
+    const setOpen = (open: boolean) => {
+      const wasOpen = widget.dataset.open === "true";
+      widget.dataset.open = String(open);
+      toggleBtn.setAttribute("aria-expanded", String(open));
+      sessionStorage.setItem("portfolio_chat_open", String(open));
+      if (open) {
+        input.disabled = false;
+        input.focus();
+        if (!wasOpen && (window as any).umami) {
+          (window as any).umami.track("Chatbot Opened");
+        }
+      }
+    };
+
+    if (sessionStorage.getItem("portfolio_chat_open") === "true") {
+      setOpen(true);
+    }
+
+    const saveToHistory = (role: "user" | "bot", text: string) => {
+      try {
+        const raw = sessionStorage.getItem("portfolio_chat_history");
+        const list = raw ? JSON.parse(raw) : [];
+        list.push({ role, text });
+        sessionStorage.setItem("portfolio_chat_history", JSON.stringify(list));
+      } catch {}
+    };
+
+    const restoreHistory = () => {
+      try {
+        const raw = sessionStorage.getItem("portfolio_chat_history");
+        if (!raw) return;
+        const list: Array<{ role: "user" | "bot"; text: string }> = JSON.parse(raw);
+        if (list.length === 0) return;
+
+        messages.innerHTML = "";
+        for (const item of list) {
+          const el = document.createElement("div");
+          el.className = `chat__msg chat__msg--${item.role}`;
+          if (item.role === "bot") {
+            el.innerHTML = renderMarkdown(item.text);
+          } else {
+            el.textContent = item.text;
+          }
+          messages.appendChild(el);
+        }
+        messages.scrollTop = messages.scrollHeight;
+      } catch {}
+    };
+
+    restoreHistory();
+
+    toggleBtn.addEventListener("click", () => setOpen(widget.dataset.open !== "true"));
+    closeBtn.addEventListener("click", () => setOpen(false));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && widget.dataset.open === "true") setOpen(false);
+    });
+
+    let typingIndicatorEl: HTMLElement | null = null;
+    let warmupMsgEl: HTMLElement | null = null;
+    let countdownInterval: number | null = null;
+
+    const showTypingIndicator = () => {
+      if (typingIndicatorEl) return;
+      const el = document.createElement("div");
+      el.className = "chat__msg chat__msg--bot chat__msg--typing";
+      el.innerHTML = '<div class="chat__typing"><span></span><span></span><span></span></div>';
+      messages.appendChild(el);
+      messages.scrollTop = messages.scrollHeight;
+      typingIndicatorEl = el;
+    };
+
+    const updateWarmupMsg = (text: string) => {
+      if (!warmupMsgEl) {
+        const el = document.createElement("div");
+        el.className = "chat__msg chat__msg--bot chat__msg--warmup";
+        if (typingIndicatorEl) {
+          messages.insertBefore(el, typingIndicatorEl);
+        } else {
+          messages.appendChild(el);
+        }
+        warmupMsgEl = el;
+      }
+      warmupMsgEl.textContent = text;
+      messages.scrollTop = messages.scrollHeight;
+    };
+
+    const removeIndicators = () => {
+      if (countdownInterval !== null) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+      if (warmupMsgEl) {
+        warmupMsgEl.remove();
+        warmupMsgEl = null;
+      }
+      if (typingIndicatorEl) {
+        typingIndicatorEl.remove();
+        typingIndicatorEl = null;
+      }
+    };
+
+    const addMsg = (text: string, role: "user" | "bot", save: boolean = true): Promise<void> => {
+      return new Promise((resolve) => {
+        const el = document.createElement("div");
+        el.className = `chat__msg chat__msg--${role}`;
+        messages.appendChild(el);
+
+        if (role === "bot") {
+          let i = 0;
+          const speed = 15; // ms per character
+          const timer = setInterval(() => {
+            if (i < text.length) {
+              i++;
+              el.innerHTML = renderMarkdown(text.slice(0, i));
+              messages.scrollTop = messages.scrollHeight;
+            } else {
+              clearInterval(timer);
+              if (save) saveToHistory(role, text);
+              resolve();
+            }
+          }, speed);
+        } else {
+          el.textContent = text;
+          messages.scrollTop = messages.scrollHeight;
+          if (save) saveToHistory(role, text);
+          resolve();
+        }
+      });
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      if ((window as any).umami) {
+        (window as any).umami.track("Chatbot Message Sent");
+      }
+
+      input.value = "";
+      input.disabled = true;
+      await addMsg(msg, "user");
+
+      showTypingIndicator();
+
+      const sendTime = Date.now();
+
+      // If user was idle for > 14 mins, reset backend status and start fresh warmup clock
+      if (lastBackendReadyTime && sendTime - lastBackendReadyTime > IDLE_TIMEOUT_MS) {
+        isBackendReady = false;
+        lastBackendReadyTime = null;
+        warmupStartTime = sendTime;
+      }
+
+      // Start 1s tick interval to monitor response delay
+      countdownInterval = window.setInterval(() => {
+        const elapsedSinceSend = Math.floor((Date.now() - sendTime) / 1000);
+
+        // If after 3s of waiting the backend hasn't responded, it's cold starting
+        if (elapsedSinceSend >= 3 && !isBackendReady) {
+          const elapsedTotal = Math.floor((Date.now() - warmupStartTime) / 1000);
+          const remaining = Math.max(0, ESTIMATED_COLD_START_SEC - elapsedTotal);
+
+          let countdownMsg = "";
+          if (isFr) {
+            countdownMsg = remaining > 0
+              ? `Le serveur sort de veille (encore environ ${remaining}s)...`
+              : `Le serveur sort de veille (démarrage imminent...)...`;
+          } else {
+            countdownMsg = remaining > 0
+              ? `Server is waking up (approx. ${remaining}s remaining)...`
+              : `Server is waking up (starting imminently...)...`;
+          }
+
+          updateWarmupMsg(countdownMsg);
+        }
+      }, 1000);
+
+      const handleBotReply = async (replyText: string) => {
+        removeIndicators();
+        await addMsg(replyText, "bot");
+        input.disabled = false;
+        input.focus();
+      };
+
+      // If no API URL is configured
+      if (!apiUrl) {
+        await handleBotReply(
+          isFr
+            ? "Le service de chat est actuellement indisponible."
+            : "The chat service is currently unavailable."
+        );
+        return;
+      }
+
+      const maxRetries = 3;
+      let attempt = 0;
+      let res: Response | null = null;
+
+      while (attempt <= maxRetries) {
+        try {
+          const payload: Record<string, string> = { message: msg, lang: lang };
+          if (threadId) {
+            payload.thread_id = threadId;
+          }
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout to allow Render cold start (45s)
+
+          const currentRes = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+
+          // Si Render démarre et renvoie 502/503/504, on retente
+          if ([502, 503, 504].includes(currentRes.status) && attempt < maxRetries) {
+            attempt++;
+            await new Promise((r) => setTimeout(r, 3000));
+            continue;
+          }
+
+          res = currentRes;
+          break;
+        } catch (err) {
+          console.warn(`[Chatbot API] Fetch attempt ${attempt + 1}/${maxRetries + 1} failed:`, err);
+          if (attempt < maxRetries) {
+            attempt++;
+            await new Promise((r) => setTimeout(r, 3000));
+          } else {
+            break;
+          }
+        }
+      }
+
+      if (!res) {
+        await handleBotReply(
+          isFr
+            ? "Le serveur met du temps à répondre. Merci de réessayer dans un instant."
+            : "The server is taking longer than expected to respond. Please try again in a few moments."
+        );
+        return;
+      }
+
+      if (!res.ok) {
+        const errData = (await res.json().catch(() => ({}))) as { detail?: string };
+        if (errData && errData.detail) {
+          await handleBotReply(errData.detail);
+          return;
+        }
+        await handleBotReply(
+          isFr
+            ? "Une erreur est survenue lors de la communication avec le serveur."
+            : "An error occurred while communicating with the server."
+        );
+        return;
+      }
+
+      const data = (await res.json()) as { reply: string; thread_id: string };
+      // Mark backend as ready & refresh last readiness timestamp
+      isBackendReady = true;
+      lastBackendReadyTime = Date.now();
+
+      if (data.thread_id) {
+        threadId = data.thread_id;
+        sessionStorage.setItem("portfolio_chat_thread_id", threadId);
+      }
+      await handleBotReply(data.reply ?? "…");
+    });
+  }
+
+  // Initialize on load and on page transition (Astro View Transitions)
+  initChat();
+  document.addEventListener("astro:page-load", initChat);
+</script>
+
+<style>
+  .chat {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 900;
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+  .chat__fab {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: var(--accent-ink);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-lg);
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease),
+      opacity var(--dur) var(--ease),
+      visibility var(--dur) var(--ease);
+  }
+  .chat__fab:hover {
+    transform: scale(1.07);
+    box-shadow: 0 16px 48px -12px rgba(200, 85, 45, 0.45);
+  }
+  [data-open="true"] .chat__fab {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    pointer-events: none;
+  }
+  .chat__fab-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .chat__pane {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 360px;
+    max-width: calc(100vw - 2rem);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    /* Transition states */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px) scale(0.95);
+    transform-origin: bottom right;
+    pointer-events: none;
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease),
+      visibility var(--dur) var(--ease);
+  }
+  [data-open="true"] .chat__pane {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .chat__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--hairline-2);
+    background: var(--bg-2);
+  }
+  .chat__head-name {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-2);
+  }
+  .chat__close {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-pill);
+    color: var(--ink-3);
+    transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  }
+  .chat__close:hover {
+    color: var(--ink);
+    background: var(--bg-2);
+  }
+  .chat__close svg { width: 1rem; height: 1rem; }
+
+  .chat__messages {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    max-height: 340px;
+    min-height: 120px;
+  }
+  :global(.chat__msg) {
+    max-width: 85%;
+    padding: 0.6rem 0.85rem;
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    animation: chat-msg-in 0.25s var(--ease) forwards;
+  }
+  :global(.chat__msg--bot) {
+    background: var(--bg-2);
+    color: var(--ink);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  :global(.chat__msg--user) {
+    background: var(--accent);
+    color: var(--accent-ink);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  :global(.chat__msg strong) {
+    font-weight: 700;
+  }
+  :global(.chat__msg em) {
+    font-style: italic;
+  }
+  :global(.chat__msg a) {
+    color: inherit;
+    text-decoration: underline;
+  }
+  :global(.chat__msg--typing) {
+    padding: 0.6rem 0.85rem;
+    display: inline-flex;
+    align-items: center;
+  }
+  :global(.chat__msg--warmup) {
+    font-size: var(--text-xs);
+    color: var(--ink-2);
+    font-style: italic;
+    animation: chat-msg-in 0.3s ease-out;
+  }
+  :global(.chat__typing) {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 1rem;
+  }
+  :global(.chat__typing span) {
+    width: 6px;
+    height: 6px;
+    background-color: var(--ink-2);
+    border-radius: var(--radius-pill);
+    opacity: 0.4;
+    animation: chat-bounce 1.4s infinite ease-in-out both;
+  }
+  :global(.chat__typing span:nth-child(1)) {
+    animation-delay: -0.32s;
+  }
+  :global(.chat__typing span:nth-child(2)) {
+    animation-delay: -0.16s;
+  }
+  @keyframes chat-bounce {
+    0%, 80%, 100% {
+      transform: scale(0.6);
+      opacity: 0.4;
+    }
+    40% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+  @keyframes chat-msg-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .chat__form {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.85rem;
+    border-top: 1px solid var(--hairline-2);
+    background: var(--bg-2);
+  }
+  .chat__input {
+    flex: 1 1 auto;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    font-size: var(--text-sm);
+    font-family: var(--font-body);
+    color: var(--ink);
+    outline: none;
+    transition: border-color var(--dur-fast) var(--ease);
+  }
+  .chat__input:focus {
+    border-color: var(--accent);
+  }
+  .chat__send {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: var(--radius-pill);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+  }
+  .chat__send svg { width: 1.1rem; height: 1.1rem; }
+</style>

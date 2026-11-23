@@ -1,0 +1,150 @@
+---
+import type { Project } from "@lib/projects";
+import { domainIcon } from "@lib/taxonomyIcons";
+import { localizedPath, type Lang } from "@i18n/ui";
+
+interface Props {
+  project: Project;
+  lang: Lang;
+  index?: number;
+}
+
+const { project, lang, index = 0 } = Astro.props;
+const d = project.data;
+const cleanSlug = project.slug.replace(/^(fr|en)\//, "");
+const url = localizedPath(`/projects/${cleanSlug}`, lang);
+const PrimaryIcon = domainIcon[d.domains[0]];
+
+function fixTypography(str: string): string {
+  if (!str) return str;
+  return str.replace(/ (\:\s?)/g, "\u00A0$1");
+}
+---
+
+<a
+  class="pcard card card--interactive reveal"
+  href={url}
+  style={`transition-delay:${Math.min(index * 60, 300)}ms`}
+  data-category={d.category}
+  data-domains={d.domains.join(",")}
+  aria-label={d.title}
+>
+  <article class="card__core pcard__core">
+    <div class="pcard__figure">
+      {
+        d.cover ? (
+          <img src={d.cover} alt="" loading="lazy" decoding="async" />
+        ) : (
+          <div class="pcard__placeholder" aria-hidden="true">
+            {PrimaryIcon && <PrimaryIcon weight="thin" />}
+          </div>
+        )
+      }
+      {d.venue && <span class="badge pcard__venue">{d.venue}</span>}
+    </div>
+
+    <div class="pcard__body">
+      {d.date && <p class="pcard__kicker">{d.date}</p>}
+      <h3 class="pcard__title">{fixTypography(d.title)}</h3>
+      <p class="pcard__summary muted">{fixTypography(d.summary)}</p>
+    </div>
+  </article>
+</a>
+
+<style>
+  .pcard {
+    display: block;
+    color: inherit;
+    height: 100%;
+  }
+  .pcard.is-filtered-out {
+    display: none !important;
+  }
+  .pcard__core {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .pcard__figure {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: calc(var(--radius-lg) - 6px) calc(var(--radius-lg) - 6px) 0 0;
+    overflow: hidden;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--hairline-2);
+  }
+  .pcard__figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease);
+  }
+  .pcard:hover .pcard__figure img {
+    transform: scale(1.03);
+  }
+  .pcard__placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: var(--ink-3);
+    background:
+      radial-gradient(120% 120% at 80% -10%, var(--accent-tint), transparent 55%),
+      repeating-linear-gradient(
+        45deg,
+        var(--hairline-2) 0 1px,
+        transparent 1px 11px
+      );
+  }
+  .pcard__placeholder svg {
+    width: 38%;
+    height: 38%;
+    max-width: 96px;
+    opacity: 0.7;
+  }
+  .pcard__venue {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--hairline);
+  }
+  .pcard__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.35rem 1.5rem;
+  }
+  .pcard__kicker {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0;
+  }
+  .pcard__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-xl);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    transition: color var(--dur-fast) var(--ease);
+  }
+  .pcard:hover .pcard__title {
+    color: var(--accent);
+  }
+  .pcard__tagline {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-3);
+    letter-spacing: -0.01em;
+  }
+  .pcard__summary {
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    margin-top: 0.1rem;
+  }
+</style>

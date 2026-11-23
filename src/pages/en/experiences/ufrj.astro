@@ -1,0 +1,408 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getLangFromUrl } from "@i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const isFr = lang === "fr";
+const title = isFr ? "Un semestre à l'UFRJ - Romain Sebire" : "A semester at UFRJ - Romain Sebire";
+
+const sections = isFr
+  ? [
+      {
+        heading: "Introduction et Défi Académique",
+        text: [
+          "En mars 2025, j’ai entamé un échange académique de six mois à l’Université Fédérale de Rio de Janeiro (UFRJ), au sein du cursus d'ingénierie informatique (<i>Engenharia de Computação e Informação</i>). Ce projet de mobilité internationale représentait pour moi un double défi : d'une part, approfondir mes compétences en science des données dans une institution de premier plan en Amérique du Sud ; d'autre part, m'immerger totalement dans un nouvel environnement linguistique et culturel en suivant l'intégralité de mes cours en portugais."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/sugarloaf.webp", alt: "Téléphérique du Pain de Sucre" },
+          { src: "/images/experiences/ufrj/christ-redeemer.webp", alt: "Christ Rédempteur" },
+        ],
+      },
+      {
+        heading: "Préparatifs et Démarches Administrative",
+        text: [
+          "L'aboutissement de ce projet a nécessité une préparation rigoureuse en amont et à mon arrivée. Les démarches ont commencé en France par l’obtention du visa d’études VITEM IV auprès du consulat général du Brésil à Paris. Une fois sur place, j'ai rapidement dû me familiariser avec les formalités administratives locales : l'enregistrement auprès de la police fédérale pour l'obtention de la carte de séjour (RNM) sous 60 jours, et la création d'un CPF, indispensable pour la vie quotidienne. Par ailleurs, la recherche de mon logement a été gérée à distance et en portugais auprès d'un agent immobilier local."
+        ],
+      },
+      {
+        heading: "L'Intégration Académique et Choix des Cours",
+        text: [
+          "Situé sur l'île d'Ilha do Fundão, le campus de l'UFRJ regroupe un écosystème d'innovation mêlant départements académiques, laboratoires de recherche et sièges industriels. J'y ai construit un emploi du temps sur mesure totalisant 23 crédits brésiliens, en ciblant des matières avancées : <i>Mineração de Dados</i> (Data Mining), <i>Aprendizado de Máquina</i> (Machine Learning), <i>Teoria da Computação</i> (Théorie du calcul) et <i>Computação Científica</i> (Mathématiques appliquées à l'IA). L'adaptation au système universitaire brésilien, participatif et axé sur des projets collaboratifs et individuels complexes rédigés et présentés en portugais, a considérablement renforcé mes compétences en portugais oral et en travail d'équipe international."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/campus.webp", alt: "Campus de l'UFRJ" },
+          { src: "/images/experiences/ufrj/logo-statue.webp", alt: "Logo de l'UFRJ" },
+          { src: "/images/experiences/ufrj/classroom.webp", alt: "Salle de cours" },
+        ],
+      },
+      {
+        heading: "Vie Quotidienne et Immersion Linguistique",
+        text: [
+          "Vivre à Rio de Janeiro implique de s’adapter au rythme de la métropole. Les cours et activités débutant tôt le matin pour suivre la course du soleil, j’ai rapidement adopté le mode de vie <i>carioca</i>. Cette immersion m'a également permis de découvrir une gastronomie riche et conviviale (l'incontournable <i>feijoada</i>, le <i>churrasco</i>, ou encore l'açaí) et de pratiquer le portugais quotidiennement. C'est à travers ces échanges informels avec les étudiants brésiliens que j'ai pu progresser rapidement et découvrir la culture locale."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/acai.webp", alt: "Açaí" },
+          { src: "/images/experiences/ufrj/churrasco.webp", alt: "Churrasco" },
+        ],
+      },
+      {
+        heading: "Une Biodiversité Unique",
+        text: [
+          "Rio de Janeiro surprend par sa topographie unique entre centres urbains et nature sauvage. La forêt de Tijuca, l'une des plus grandes forêts urbaines au monde, a été le théâtre de nombreuses randonnées en immersion au coeur d'une biodiversité tropicale préservée. De l'ascension nocturne du Morro Dois Irmãos pour assister au lever du soleil sur la baie de Guanabara jusqu'au panorama imprenable depuis le mont Corcovado, ces expériences m'ont permis de mesurer la richesse écologique de cette mégapole."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/coati.webp", alt: "Coati" },
+          { src: "/images/experiences/ufrj/monkey.webp", alt: "Petit singe" },
+          { src: "/images/experiences/ufrj/toucan.webp", alt: "Toucan" },
+        ],
+        isPortraitGrid: true,
+      },
+      {
+        heading: "Ferveur Populaire : Musique, Sport et Grand Événement",
+        text: [
+          "Mon séjour a été jalonné par des manifestations culturelles majeures témoignant de la ferveur brésilienne. Mon arrivée a coïncidé avec le Carnaval de Rio, une démonstration artistique monumentale mêlant défilés rythmés au Sambódromo et célébrations populaires dans les rues. J'ai également vécu la passion nationale pour le football lorsque le club local Fluminense a atteint les demi-finales de la Champion League, transformant la ville entière en une immense <i>fan zone</i>. Enfin, assister au concert historique de Lady Gaga sur la plage de Copacabana devant plus de 2 millions de personnes restera un exemple mémorable de rassemblement populaire."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/carnival.webp", alt: "Carnaval de Rio au Sambódromo" },
+          { src: "/images/experiences/ufrj/copacabana-concert.webp", alt: "Concert de Lady Gaga à Copacabana" },
+          { src: "/images/experiences/ufrj/fan-zone.webp", alt: "Fan zone Fluminense" },
+        ],
+        isPortraitGrid: true,
+      },
+      {
+        heading: "Découvertes Régionales et Bilan Humain",
+        text: [
+          "En dehors de Rio, j'ai exploré d'autres aspects du pays : du patrimoine colonial préservé de Paraty et de la nature sauvage d'Ilha Grande jusqu'à la puissance brute des chutes d’Iguaçu, à la frontière argentine. Au-delà des cours de machine learning et des paysages grandioses, ce semestre restera avant tout une aventure humaine faite de rencontres marquantes avec des étudiants locaux et des voyageurs du monde entier. Cet échange à l'UFRJ a consolidé ma capacité à évoluer dans des contextes multiculturels et a renforcé mon envie de mener des projets à l'échelle internationale."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/paraty.webp", alt: "Rues coloniales de Paraty" },
+          { src: "/images/experiences/ufrj/iguazu-falls.webp", alt: "Chutes d'Iguaçu" },
+        ],
+      },
+    ]
+  : [
+      {
+        heading: "Introduction and Academic Challenge",
+        text: [
+          "In March 2025, I embarked on an academic exchange of six months at the Federal University of Rio de Janeiro (UFRJ), within the computer engineering curriculum (<i>Engenharia de Computação e Informação</i>). This international mobility project represented a double challenge for me: on one hand, to deepen my skills in data science in a leading institution in South America; on the other hand, to fully immerse myself in a new linguistic and cultural environment by following all my classes in Portuguese."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/sugarloaf.webp", alt: "Sugarloaf Mountain cable car" },
+          { src: "/images/experiences/ufrj/christ-redeemer.webp", alt: "Christ the Redeemer statue" },
+        ],
+      },
+      {
+        heading: "Preparations and Administrative Procedures",
+        text: [
+          "The culmination of this project required rigorous preparation beforehand and upon my arrival. The procedures began in France with the acquisition of the VITEM IV study visa from the Consulate General of Brazil in Paris. Once there, I quickly had to familiarize myself with local administrative formalities: registration with the federal police to obtain the residence permit (RNM) within 60 days, and the creation of a CPF, indispensable for daily life. Furthermore, the search for my housing was managed remotely and in Portuguese with a local real estate agent."
+        ],
+      },
+      {
+        heading: "Academic Integration and Course Selection",
+        text: [
+          "Located on the island of Ilha do Fundão, the UFRJ campus brings together an innovation ecosystem combining academic departments, research laboratories, and industrial headquarters. I built a custom schedule totaling 23 Brazilian credits, targeting advanced subjects: <i>Mineração de Dados</i> (Data Mining), <i>Aprendizado de Máquina</i> (Machine Learning), <i>Teoria da Computação</i> (Theory of computation), and <i>Computação Científica</i> (Mathematics applied to AI). Adapting to the Brazilian university system, which is highly participative and centered on complex collaborative and individual projects written and presented in Portuguese, significantly strengthened my oral Portuguese and international teamwork skills."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/campus.webp", alt: "UFRJ campus" },
+          { src: "/images/experiences/ufrj/logo-statue.webp", alt: "UFRJ logo statue" },
+          { src: "/images/experiences/ufrj/classroom.webp", alt: "Classroom photo" },
+        ],
+      },
+      {
+        heading: "Daily Life and Linguistic Immersion",
+        text: [
+          "Living in Rio de Janeiro means adapting to the rhythm of the metropolis. With classes and activities starting early in the morning to follow the path of the sun, I quickly adopted the <i>carioca</i> lifestyle. This immersion also allowed me to discover a rich and convivial gastronomy (the essential <i>feijoada</i>, <i>churrasco</i>, or <i>açaí</i>) and to practice Portuguese daily. It was through these informal exchanges with Brazilian students that I was able to make rapid progress and discover the local culture."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/acai.webp", alt: "Açaí bowl" },
+          { src: "/images/experiences/ufrj/churrasco.webp", alt: "Churrasco plate" },
+        ],
+      },
+      {
+        heading: "A Unique Biodiversity",
+        text: [
+          "Rio de Janeiro surprises with its unique topography between urban centers and wild nature. The Tijuca Forest, one of the largest urban forests in the world, was the scene of numerous hikes in immersion at the heart of a preserved tropical biodiversity. From the night climb of Morro Dois Irmãos to watch the sunrise over Guanabara Bay to the breathtaking panorama from Mount Corcovado, these experiences allowed me to measure the ecological richness of this megacity."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/coati.webp", alt: "Coati" },
+          { src: "/images/experiences/ufrj/monkey.webp", alt: "Small monkey" },
+          { src: "/images/experiences/ufrj/toucan.webp", alt: "Toucan" },
+        ],
+        isPortraitGrid: true,
+      },
+      {
+        heading: "Popular Fervor: Music, Sport and Major Events",
+        text: [
+          "My stay was marked by major cultural events testifying to Brazilian fervor. My arrival coincided with the Rio Carnival, a monumental artistic demonstration blending rhythmic parades at the Sambadrome and popular street celebrations. I also experienced the national passion for football when local club Fluminense reached the semi-finals of the Champion League, transforming the entire city into a giant <i>fan zone</i>. Finally, attending the historic Lady Gaga concert on Copacabana Beach in front of over 2 million people will remain a memorable example of popular gathering."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/carnival.webp", alt: "Rio Carnival at the Sambadrome" },
+          { src: "/images/experiences/ufrj/copacabana-concert.webp", alt: "Lady Gaga concert at Copacabana" },
+          { src: "/images/experiences/ufrj/fan-zone.webp", alt: "Fluminense fan zone" },
+        ],
+        isPortraitGrid: true,
+      },
+      {
+        heading: "Regional Discoveries and Human Assessment",
+        text: [
+          "Outside of Rio, I explored other aspects of the country: from the preserved colonial heritage of Paraty and the wild nature of Ilha Grande to the raw power of the Iguaçu Falls, on the Argentine border. Beyond machine learning classes and grandiose landscapes, this semester will remain above all a human adventure made of memorable encounters with local students and travelers from all over the world. This exchange at UFRJ consolidated my ability to evolve in multicultural contexts and reinforced my desire to lead projects on an international scale."
+        ],
+        photos: [
+          { src: "/images/experiences/ufrj/paraty.webp", alt: "Colonial streets of Paraty" },
+          { src: "/images/experiences/ufrj/iguazu-falls.webp", alt: "Iguaçu Falls" },
+        ],
+      },
+    ];
+---
+
+<BaseLayout {title} description={isFr ? "Six mois au Brésil à l'UFRJ : data science, carnaval et immersion culturelle." : "Six months in Brazil at UFRJ: data science, carnival and cultural immersion."} image="/images/experiences/ufrj/sugarloaf.webp">
+  <article class="container ufrj">
+    <a class="exp-back muted" href={isFr ? "/experiences" : "/en/experiences"}>
+      &larr; {isFr ? "Expériences" : "Experiences"}
+    </a>
+
+    <header class="ufrj__head reveal">
+      <p class="eyebrow">
+        {isFr ? "Échange académique M1 · Rio de Janeiro · 2025" : "Academic exchange M1 · Rio de Janeiro · 2025"}
+      </p>
+      <h1 class="display ufrj__title">
+        {isFr ? "Un semestre à l'UFRJ" : "A semester at UFRJ"}
+      </h1>
+    </header>
+
+    {
+      (() => {
+        let photoSectionIndex = 0;
+        return sections.map((s, i) => {
+          const hasPhotos = s.photos && s.photos.length > 0;
+          const photoCount = s.photos ? s.photos.length : 0;
+          const isPortrait = s.isPortraitGrid || false;
+          let isAlt = false;
+          if (hasPhotos) {
+            isAlt = photoSectionIndex % 2 !== 0;
+            photoSectionIndex++;
+          }
+
+          return (
+            <section 
+              class={`ufrj__row ${!hasPhotos ? "ufrj__row--no-media" : ""} ${hasPhotos ? `ufrj__row--photos-${photoCount}` : ""} ${isPortrait ? "ufrj__row--portrait" : ""} ${isAlt ? "ufrj__row--alt" : ""} reveal`} 
+              style={`transition-delay:${i * 80}ms`}
+            >
+              <div class="ufrj__content">
+                <h2 class="ufrj__sh">{s.heading}</h2>
+                {s.text.map((p) => (
+                  <p class="ufrj__text" set:html={p} />
+                ))}
+              </div>
+              
+              {s.photos && s.photos.length === 3 && (
+                s.isPortraitGrid ? (
+                  <div class="ufrj__media ufrj__media--portrait-3">
+                    {s.photos.map((p) => (
+                      <img src={p.src} alt={p.alt} loading="lazy" decoding="async" />
+                    ))}
+                  </div>
+                ) : (
+                  <div class="ufrj__media ufrj__media--3">
+                    <div class="ufrj__main-img">
+                      <img src={s.photos[0].src} alt={s.photos[0].alt} loading="lazy" decoding="async" />
+                    </div>
+                    <div class="ufrj__sub-grid-2">
+                      {s.photos.slice(1).map((p) => (
+                        <img src={p.src} alt={p.alt} loading="lazy" decoding="async" />
+                      ))}
+                    </div>
+                  </div>
+                )
+              )}
+              
+              {s.photos && s.photos.length === 2 && (
+                <div class="ufrj__media ufrj__media--2">
+                  <img src={s.photos[0].src} alt={s.photos[0].alt} loading="lazy" decoding="async" />
+                  <img src={s.photos[1].src} alt={s.photos[1].alt} loading="lazy" decoding="async" />
+                </div>
+              )}
+            </section>
+          );
+        });
+      })()
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .eyebrow::before {
+    display: none;
+  }
+  .ufrj {
+    padding-top: calc(var(--nav-h) + clamp(1.5rem, 4vw, 3rem));
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+  }
+  .exp-back {
+    display: inline-flex;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    transition: color var(--dur-fast) var(--ease);
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .exp-back:hover { color: var(--accent); }
+  
+  .ufrj__head {
+    max-width: 60ch;
+    display: flex; flex-direction: column; gap: 0.85rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .ufrj__title { font-size: var(--text-4xl); }
+  
+  .ufrj__sh {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3);
+    margin-bottom: 0.85rem;
+  }
+  .ufrj__text {
+    font-size: var(--text-base); line-height: 1.7; color: var(--ink-2);
+    max-width: 68ch; margin-bottom: 1.5rem;
+  }
+  .ufrj__text:last-of-type {
+    margin-bottom: 0;
+  }
+  
+  /* Rows & Columns Alternating Layout */
+  .ufrj__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  .ufrj__row--alt {
+    flex-direction: row-reverse;
+  }
+  .ufrj__row--no-media {
+    justify-content: flex-start;
+  }
+  .ufrj__row--no-media .ufrj__content {
+    flex: 1;
+    max-width: 100%;
+  }
+  .ufrj__row--no-media .ufrj__text {
+    max-width: 100%;
+  }
+  /* 3 portrait photos */
+  .ufrj__row--photos-3.ufrj__row--portrait .ufrj__content {
+    flex: 0.9;
+  }
+  .ufrj__row--photos-3.ufrj__row--portrait .ufrj__media {
+    flex: 1.1;
+  }
+  /* 3 collage photos (landscape) */
+  .ufrj__row--photos-3:not(.ufrj__row--portrait) .ufrj__content {
+    flex: 1.15;
+  }
+  .ufrj__row--photos-3:not(.ufrj__row--portrait) .ufrj__media {
+    flex: 0.85;
+  }
+  /* 2 photos */
+  .ufrj__row--photos-2 .ufrj__content {
+    flex: 1.2;
+  }
+  .ufrj__row--photos-2 .ufrj__media {
+    flex: 0.8;
+  }
+  .ufrj__content {
+    flex: 1.1;
+    min-width: 0;
+  }
+  
+  /* Media Grid Container */
+  .ufrj__media {
+    flex: 0.9;
+    min-width: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .ufrj__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hairline-2);
+    transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
+  }
+  .ufrj__media img:hover {
+    transform: scale(1.02);
+  }
+  
+  /* 2 Photos Layout */
+  .ufrj__media--2 {
+    grid-template-columns: 1fr 1fr;
+    aspect-ratio: 16/11;
+  }
+  
+  /* 3 Photos Collage Layout */
+  .ufrj__media--3 {
+    grid-template-columns: 1.5fr 1fr;
+    aspect-ratio: 16/11;
+  }
+  .ufrj__media--3 .ufrj__main-img {
+    height: 100%;
+  }
+  .ufrj__media--3 .ufrj__sub-grid-2 {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  /* 3 Portrait Photos Row Layout */
+  .ufrj__media--portrait-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .ufrj__media--portrait-3 img {
+    aspect-ratio: 3/4;
+    object-fit: cover;
+  }
+  
+  /* Mobile Responsive Adjustments */
+  @media (max-width: 900px) {
+    .ufrj__row {
+      gap: clamp(1.5rem, 4vw, 2.5rem);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .ufrj__row, .ufrj__row--alt {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1.5rem;
+      margin-bottom: clamp(2rem, 4vw, 3rem);
+    }
+    .ufrj__media {
+      aspect-ratio: auto;
+      grid-template-columns: 1fr;
+    }
+    .ufrj__media--2 {
+      aspect-ratio: auto;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .ufrj__media--3 {
+      aspect-ratio: auto;
+      grid-template-columns: 1fr;
+    }
+    .ufrj__media--3 .ufrj__sub-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+      gap: 0.5rem;
+    }
+    .ufrj__media img {
+      aspect-ratio: 4/3;
+    }
+    .ufrj__media--portrait-3 {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .ufrj__media--portrait-3 img {
+      aspect-ratio: 3/4;
+    }
+  }
+</style>

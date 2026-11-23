@@ -1,0 +1,40 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getLangFromUrl } from "@i18n/ui";
+import { ArrowLeft } from "@phosphor-icons/react";
+
+const lang = getLangFromUrl(Astro.url);
+const isFr = lang === "fr";
+---
+
+<BaseLayout title="404 - Romain Sebire" description="Page introuvable.">
+  <script is:inline>
+    if (window.location.pathname.startsWith('/en/')) {
+      window.location.replace('/en/404/');
+    }
+  </script>
+  <section class="container not-found">
+    <p class="eyebrow">Erreur 404</p>
+    <h1 class="display not-found__title">Page introuvable.</h1>
+    <p class="lead">Cette page n'existe pas ou a été déplacée.</p>
+    <a class="btn btn--primary" href="/">
+      <ArrowLeft weight="bold" />
+      Retour à l'accueil
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: calc(100svh - var(--nav-h) - 8rem);
+    padding-top: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem));
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 55ch;
+  }
+  .not-found__title {
+    font-size: var(--text-4xl);
+  }
+</style>

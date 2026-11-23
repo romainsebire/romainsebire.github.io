@@ -1,0 +1,445 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getProjects } from "@lib/projects";
+import { domainIcon } from "@lib/taxonomyIcons";
+import { GithubLogo, ArrowUpRight, ArrowLeft, ArrowRight, Medal } from "@phosphor-icons/react";
+import { getLangFromUrl, useTranslations, taxonomyLabel, localizedPath } from "@i18n/ui";
+
+export async function getStaticPaths() {
+  const projects = await getProjects("en");
+  return projects.map((project, i) => ({
+    params: { slug: project.slug.replace(/^en\//, "") },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+const { project, next } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const d = project.data;
+const nextUrl = localizedPath(`/projects/${next.slug.replace(/^(fr|en)\//, "")}`, lang);
+const backUrl = localizedPath("/projects", lang);
+const title = `${d.title} - Romain Sebire`;
+const { Content } = await project.render();
+---
+
+<BaseLayout title={title} description={d.summary} image={d.cover ?? "/images/og-cover.png"}>
+  <article class="container project">
+    <a class="project__back" href={backUrl}>
+      <ArrowLeft weight="bold" />
+      {t("project.back")}
+    </a>
+
+    <header class="project__head reveal">
+      <div class="project__domains">
+        {
+          d.domains.map((key) => {
+            const Icon = domainIcon[key];
+            return (
+              <span class="chip">
+                {Icon && <Icon weight="regular" />}
+                {taxonomyLabel(key, lang)}
+              </span>
+            );
+          })
+        }
+        {d.venue && <span class="badge">{d.venue}</span>}
+      </div>
+      <h1 class="display project__title">{d.title}</h1>
+      <p class="project__tagline">{d.tagline}</p>
+    </header>
+
+    <div class="project__layout">
+      <div class="project__main rich-text reveal">
+        {
+          d.video && (
+            <div class="project__featured-video" style="margin-top: 0; margin-bottom: 1.5rem; width: 100%;">
+              <video src={d.video} controls class="project__video-player" style="width: 100%;"></video>
+            </div>
+          )
+        }
+        {
+          d.imageGroups && d.imageGroups.length > 0 ? (
+            <div class="project__featured-groups" style="margin-top: 0; margin-bottom: 1.5rem; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+              {d.imageGroups.map((group) => (
+                <div class="project__image-group" style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%;">
+                  <div class="project__group-images" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; width: 100%;">
+                    {group.images.map((img) => (
+                      <img src={img.url} alt={img.alt || group.caption || "Illustration du projet"} class="project__image-item" style="width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--hairline-2); background: var(--surface); margin: 0; object-fit: contain; max-height: 280px;" />
+                    ))}
+                  </div>
+                  {group.caption && (
+                    <span class="project__image-caption" style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-3); text-align: center; display: block; line-height: 1.3;">
+                      {group.caption}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            d.images && d.images.length > 0 && (
+              <div class="project__featured-images" style="margin-top: 0; margin-bottom: 1.5rem; width: 100%;">
+                <div class="project__images-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; width: 100%;">
+                  {d.images.map((img) => (
+                    <div class="project__image-container" style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
+                      <img src={img.url} alt={img.caption || "Illustration du projet"} class="project__image-item" style="width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--hairline-2); background: var(--surface); margin: 0; object-fit: contain; max-height: 280px;" />
+                      {img.caption && (
+                        <span class="project__image-caption" style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-3); text-align: center; display: block; line-height: 1.3;">
+                          {img.caption}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          )
+        }
+        <Content />
+      </div>
+
+      <aside class="project__aside">
+        <div class="card project__panel reveal">
+          <div class="card__core project__panel-core">
+            {
+              d.date && (
+                <div class="project__date-sec">
+                  <h2 class="project__h project__h--panel">Date</h2>
+                  <p class="project__date-val">{d.date}</p>
+                </div>
+              )
+            }
+            <div>
+              <h2 class="project__h project__h--panel">{t("project.stack")}</h2>
+            <div class="project__stack">
+              {d.stack.map((tech) => <span class="chip">{tech}</span>)}
+            </div>
+            </div>
+            
+            {
+              d.environment && (
+                <div class="project__env-sec">
+                  <h2 class="project__h project__h--panel">{lang === "fr" ? "Environnement" : "Environment"}</h2>
+                  <ul class="project__env-list">
+                    {d.environment.split('\n').map((line) => (
+                      <li>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            }
+
+            {
+              d.cta ? (
+                <a
+                  class="btn btn--primary project__cta"
+                  href={d.cta.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-umami-event={d.cta.label}
+                  data-umami-event-project={project.slug.replace(/^(fr|en)\//, "")}
+                >
+                  {d.cta.icon === "github" && <GithubLogo weight="bold" />}
+                  {d.cta.icon === "medal" && <Medal weight="bold" />}
+                  {(!d.cta.icon || d.cta.icon === "link") && <ArrowUpRight weight="bold" />}
+                  {d.cta.label}
+                  <span class="btn__icon"><ArrowUpRight weight="bold" /></span>
+                </a>
+              ) : d.github ? (
+                <a
+                  class="btn btn--primary project__cta"
+                  href={d.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-umami-event="View code"
+                  data-umami-event-project={project.slug.replace(/^(fr|en)\//, "")}
+                >
+                  <GithubLogo weight="bold" />
+                  {t("project.viewCode")}
+                  <span class="btn__icon"><ArrowUpRight weight="bold" /></span>
+                </a>
+              ) : null
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <a class="project__next reveal" href={nextUrl}>
+      <span class="project__next-label">{t("project.next")}</span>
+      <span class="project__next-title">{next.data.title}</span>
+      <ArrowRight weight="bold" />
+    </a>
+  </article>
+</BaseLayout>
+
+<style>
+  .project {
+    padding-top: calc(var(--nav-h) + clamp(1rem, 3vw, 2rem));
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+  }
+  .project__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink-3);
+    transition: color var(--dur-fast) var(--ease);
+  }
+  .project__back:hover {
+    color: var(--accent);
+  }
+  .project__back svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .project__head {
+    max-width: 100%;
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .project__domains {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .project__title {
+    font-size: var(--text-4xl);
+  }
+  .project__tagline {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    margin-top: 0.25rem;
+  }
+  .project__featured-video {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 720px;
+  }
+  .project__video-player {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hairline-2);
+    background: var(--surface);
+  }
+
+  .project__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+    align-items: start;
+  }
+  .project__main {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+  }
+  .project__h {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin-bottom: 1rem;
+  }
+  .project__text {
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 68ch;
+  }
+
+  /* ---- Rich Text (Markdown elements) ---- */
+  .rich-text :global(p) {
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 68ch;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+  .rich-text :global(h2) {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .rich-text :global(h2:first-of-type) {
+    margin-top: 0;
+  }
+  .rich-text :global(h3) {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 1.25rem;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .rich-text :global(h4) {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-top: 1rem;
+    margin-bottom: 0.35rem;
+  }
+  .rich-text :global(ul), .rich-text :global(ol) {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    max-width: 68ch;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+  .rich-text :global(ul) {
+    list-style-type: disc;
+  }
+  .rich-text :global(ol) {
+    list-style-type: decimal;
+  }
+  .rich-text :global(li) {
+    margin-bottom: 0.25rem;
+  }
+  .rich-text :global(table) {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: var(--text-sm);
+  }
+  .rich-text :global(th), .rich-text :global(td) {
+    border: 1px solid var(--hairline-2);
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+  }
+  .rich-text :global(th) {
+    background: var(--bg-2);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .rich-text :global(td) {
+    color: var(--ink-2);
+  }
+  .rich-text :global(img), .rich-text :global(video) {
+    width: 100%;
+    max-height: 480px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hairline-2);
+    background: var(--surface);
+    margin: 0.75rem 0;
+  }
+
+  /* ---- Sidebar elements ---- */
+  .project__aside {
+    position: sticky;
+    top: calc(var(--nav-h) + 1.5rem);
+  }
+  .project__panel-core {
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .project__h--panel {
+    margin-bottom: 0.5rem;
+    font-size: var(--text-xs);
+  }
+  .project__date-sec {
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 1.25rem;
+  }
+  .project__date-val {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--ink-2);
+  }
+  .project__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .project__env-sec {
+    border-top: 1px solid var(--hairline);
+    padding-top: 1.25rem;
+  }
+  .project__env-list {
+    list-style-type: disc;
+    margin: 0;
+    padding-left: 1.15rem;
+    font-size: var(--text-sm);
+    color: var(--ink-2);
+    line-height: 1.4;
+  }
+  .project__env-list li {
+    margin-bottom: 0.4rem;
+  }
+  .project__env-list li:last-child {
+    margin-bottom: 0;
+  }
+  .project__cta {
+    margin-top: 0.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .project__next {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--hairline);
+    color: var(--ink);
+    transition: color var(--dur-fast) var(--ease);
+  }
+  .project__next:hover {
+    color: var(--accent);
+  }
+  .project__next-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+  }
+  .project__next-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-xl);
+    letter-spacing: -0.02em;
+  }
+  .project__next svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    transition: transform var(--dur) var(--ease);
+  }
+  .project__next:hover svg {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 860px) {
+    .project__layout {
+      grid-template-columns: 1fr;
+    }
+    .project__aside {
+      position: static;
+      order: -1;
+    }
+  }
+</style>

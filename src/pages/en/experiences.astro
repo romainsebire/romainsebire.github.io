@@ -1,0 +1,119 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { ArrowUpRight } from "@phosphor-icons/react";
+import { getLangFromUrl, useTranslations, localizedPath } from "@i18n/ui";
+
+import { experiencesList } from "@config/experiences";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const isFr = lang === "fr";
+const title = `${t("home.exp.title")} - Romain Sebire`;
+
+const experiences = experiencesList.map((e) => ({
+  href: localizedPath(`/experiences/${e.slug}`, lang),
+  img: e.img,
+  kicker: e.kicker[lang],
+  title: e.title[lang],
+  summary: e.summary[lang],
+}));
+---
+
+<BaseLayout {title} description={t("home.exp.intro")}>
+  <section class="container exps">
+    <header class="exps__head reveal">
+      <h1 class="display exps__title">{t("home.exp.title")}</h1>
+      <p class="lead">{t("home.exp.intro")}</p>
+    </header>
+
+    <div class="exps__grid">
+      {
+        experiences.map((e, i) => (
+          <a class="exp card card--interactive reveal" href={e.href} style={`transition-delay:${i * 80}ms`}>
+            <article class="card__core exp__core">
+              <div class="exp__figure">
+                <img src={e.img} alt="" loading="lazy" decoding="async" />
+              </div>
+              <div class="exp__body">
+                <p class="exp__kicker">{e.kicker}</p>
+                <h2 class="exp__title">{e.title}</h2>
+                <p class="exp__summary muted">{e.summary}</p>
+              </div>
+            </article>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .exps {
+    padding-top: calc(var(--nav-h) + clamp(2.5rem, 6vw, 5rem));
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+  }
+  .exps__head {
+    max-width: 60ch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .exps__title {
+    font-size: var(--text-4xl);
+  }
+  .exps__grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    max-width: var(--container);
+  }
+  .exp { display: block; color: inherit; }
+  .exp__core { overflow: hidden; display: flex; flex-direction: column; height: 100%; }
+  .exp__figure {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg-2);
+    border-radius: calc(var(--radius-lg) - 6px) calc(var(--radius-lg) - 6px) 0 0;
+  }
+  .exp__figure img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease);
+  }
+  .exp:hover .exp__figure img { transform: scale(1.04); }
+  .exp__body {
+    padding: 1.5rem 1.75rem 1.75rem;
+    display: flex; flex-direction: column; gap: 0.55rem;
+    flex-grow: 1;
+  }
+  .exp__kicker {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent);
+  }
+  .exp__title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: var(--text-2xl); letter-spacing: -0.02em; line-height: 1.05;
+    transition: color var(--dur-fast) var(--ease);
+  }
+  .exp:hover .exp__title {
+    color: var(--accent);
+  }
+  .exp__summary { font-size: var(--text-sm); line-height: 1.55; }
+
+  @media (min-width: 768px) {
+    .exp__core {
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .exp__figure {
+      width: 40%;
+      flex-shrink: 0;
+      border-radius: calc(var(--radius-lg) - 6px) 0 0 calc(var(--radius-lg) - 6px);
+    }
+    .exp__body {
+      padding: 2rem 2.5rem;
+      justify-content: center;
+    }
+  }
+</style>

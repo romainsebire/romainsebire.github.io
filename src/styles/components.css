@@ -1,0 +1,240 @@
+/* ==========================================================================
+   components.css — design-system primitives ("Carnet de recherche")
+   Skill-compliant: one accent, double-bezel cards, magnetic CTAs,
+   custom easing, generous rhythm. No emoji, no AI-glow.
+   ========================================================================== */
+
+/* ---- Layout primitives ---------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container-wide {
+  width: 100%;
+  max-width: var(--container-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: clamp(4rem, 10vw, var(--space-32));
+}
+.section--tight {
+  padding-block: clamp(3rem, 7vw, var(--space-24));
+}
+
+/* ---- Typography helpers --------------------------------------------------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  color: var(--ink);
+}
+.h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-4xl);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-3xl);
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+.lead {
+  font-size: var(--text-lg);
+  color: var(--ink-2);
+  line-height: 1.55;
+  max-width: 60ch;
+}
+.muted {
+  color: var(--ink-3);
+}
+
+/* Eyebrow — USE SPARINGLY (max 1 per 3 sections, per skill). */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 3rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* ---- Buttons (magnetic, button-in-button arrow) --------------------------- */
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--bg);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem 0.7rem 1.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    box-shadow var(--dur) var(--ease);
+  will-change: transform;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn__icon {
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--btn-fg) 16%, transparent);
+  transition: transform var(--dur) var(--ease);
+}
+.btn:hover .btn__icon {
+  transform: translateX(2px) translateY(-1px) scale(1.05);
+}
+
+.btn--primary {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--accent-ink);
+  box-shadow: var(--shadow);
+}
+.btn--secondary {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--bg);
+}
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border: 1px solid var(--hairline);
+  padding-left: 1.25rem;
+}
+.btn--ghost .btn__icon {
+  background: var(--bg-2);
+}
+.btn--ghost:hover {
+  background: var(--bg-2);
+}
+
+/* ---- Chips / taxonomy tags (NEUTRAL — no per-family color) ---------------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.chip svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+/* Accent appears ONLY on the active filter state. */
+.chip--active,
+.chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-tint);
+}
+button.chip {
+  cursor: pointer;
+}
+
+/* ---- Badge (venue / publication — sober, not a sales pitch) --------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.02em;
+}
+
+/* ---- Card (double-bezel: outer shell + inner core) ------------------------ */
+.card {
+  background: var(--bg-2);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--radius-lg);
+  padding: 6px;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+  will-change: transform;
+}
+.card__core {
+  background: var(--surface);
+  border: 1px solid var(--hairline-2);
+  border-radius: calc(var(--radius-lg) - 6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  height: 100%;
+}
+.card--interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ---- Hairline divider ----------------------------------------------------- */
+.hr {
+  height: 1px;
+  background: var(--hairline);
+  border: 0;
+}
+
+/* ---- Reveal-on-scroll (progressive enhancement; only active with JS) ------ */
+.reveal {
+  opacity: 1;
+}
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(6px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out),
+    filter var(--dur-slow) var(--ease-out);
+}
+html.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}

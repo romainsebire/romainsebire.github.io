@@ -1,0 +1,389 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getLangFromUrl } from "@i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const isFr = lang === "fr";
+const title = isFr ? "Responsable décors du 97ème Gala - Romain Sebire" : "Decor Manager for the 97th Gala - Romain Sebire";
+
+const sections = isFr
+  ? [
+      {
+        heading: "Introduction et Concept",
+        text: [
+          "Le <strong>Gala des Mines d'Alès</strong> est l’un des événements les plus prestigieux de l’école, clôturant la journée de remise des diplômes dans une ambiance festive et élégante. Pour sa 97ᵉ édition, plus de <strong>1000 convives</strong> ont été accueillis, avec un <strong>budget global dépassant les 140 000 €</strong>. En tant que <strong>responsable décors</strong>, j’ai eu l’opportunité de concevoir et réaliser l’un des éléments phares de la soirée : le stand photo, sur le thème <em>20 000 lieues sous les mers</em>, inspiré du célèbre roman de Jules Verne.",
+          "Pour ce projet, j’ai imaginé une épave brisée en deux, reposant au fond de l’océan sur un rocher. L’idée était de créer une scène immersive, spectaculaire, qui évoque l’exploration sous-marine. Ce choix avait aussi un avantage logistique : il permettait de <strong>recycler le bois</strong> du décor de l’année précédente, une gondole vénitienne. J’ai commencé par rechercher des <strong>images d’inspiration</strong>, puis j’ai dessiné et <strong>modélisé en 3D</strong> la structure de l’épave."
+        ],
+        photos: [
+          { src: "/images/experiences/gala/inspiration.webp", alt: "Inspiration de l'épave" },
+          { src: "/images/experiences/gala/model-3d.webp", alt: "Modélisation 3D de l'épave" },
+          { src: "/images/experiences/gala/structure-3d.webp", alt: "Modélisation 3D de la structure de l'épave" },
+          { src: "/images/experiences/gala/print-3d.webp", alt: "Impression 3D de la structure de l'épave" },
+          { src: "/images/experiences/gala/blueprints.webp", alt: "Plans des couples de l'épave" },
+        ],
+      },
+      {
+        heading: "Objectifs de la Modélisation et Construction",
+        text: [
+          "La modélisation avait plusieurs objectifs : obtenir des <strong>plans précis</strong> pour la construction, estimer le <strong>poids total</strong> de la structure, calculer le nombre de <strong>tasseaux</strong> nécessaires, et déterminer la <strong>surface à ignifuger</strong> pour respecter les normes de sécurité. Une fois le modèle validé, j’ai extrait la structure pour l’<strong>imprimer en 3D</strong>, ce qui m’a permis de visualiser les proportions et d’avoir un <strong>prototype physique</strong> à échelle réduite.",
+          "La phase de construction a commencé par la <strong>découpe des tasseaux</strong> aux dimensions exactes, en optimisant les chutes de bois pour limiter le gaspillage. J’ai ensuite assemblé le squelette de l’épave, en commençant par les <strong>couples</strong> (structures transversales perpendiculaires à la longueur du bateau), puis les <strong>lisses</strong> (tasseaux longitudinaux) pour relier l’ensemble. Cette ossature a ensuite été recouverte de <strong>planches récupérées sur des palettes</strong>, que j’ai démontées et clouées une à une pour donner l’aspect final de l’épave."
+        ],
+        photos: [
+          { src: "/images/experiences/gala/wood-cutting.webp", alt: "Découpe des tasseaux" },
+          { src: "/images/experiences/gala/frame-assembly.webp", alt: "Assemblage des couples" },
+          { src: "/images/experiences/gala/skeleton-building.webp", alt: "Début d'assemblage de l'ossature" },
+          { src: "/images/experiences/gala/wooden-skeleton.webp", alt: "Ossature en bois terminée" },
+          { src: "/images/experiences/gala/pallet-cladding.webp", alt: "Habillage avec les planches de palettes" },
+          { src: "/images/experiences/gala/support-base.webp", alt: "Base en bois pour surélever la demi-épave" },
+        ],
+      },
+      {
+        heading: "Mise en Scène et Résultat Final",
+        text: [
+          "Pour mettre en scène l’épave, j’ai construit une <strong>base en bois surélevée</strong>, permettant de donner à chaque moitié l’<strong>inclinaison souhaitée</strong>, comme si elle s’était brisée sur un rocher. La base a été recouverte d’un <strong>drap gris texturé</strong> pour simuler la roche sous-marine. Le résultat final offrait un décor immersif, photogénique et cohérent avec le thème, tout en valorisant la réutilisation de matériaux et une approche technique rigoureuse.",
+          "Ce projet m’a permis de mobiliser des compétences variées : <strong>gestion de projet</strong>, <strong>modélisation 3D</strong>, <strong>optimisation logistique</strong>, <strong>travail du bois</strong>, et surtout <strong>créativité</strong>. Il a aussi été l’occasion de collaborer avec les autres pôles du Gala, de coordonner les livraisons, les installations, et de gérer les imprévus de dernière minute. Une expérience intense, exigeante, mais profondément enrichissante."
+        ],
+        photos: [
+          { src: "/images/experiences/gala/final-decor.webp", alt: "Décor terminé" },
+          { src: "/images/experiences/gala/lit-decor.webp", alt: "Décor terminé et éclairé" },
+          { src: "/images/experiences/gala/official-photo.webp", alt: "Photo officielle du Gala" },
+        ],
+      },
+    ]
+  : [
+      {
+        heading: "Introduction and Concept",
+        text: [
+          "The <strong>Gala des Mines d'Alès</strong> is one of the school's most prestigious events, wrapping up graduation day in a festive and elegant atmosphere. For its 97th edition, more than <strong>1,000 guests</strong> attended, with a <strong>global budget exceeding €140,000</strong>. As <strong>decor manager</strong>, I had the opportunity to design and build one of the highlights of the evening: the photo booth, themed around <em>20,000 Leagues Under the Sea</em>, inspired by Jules Verne's famous novel.",
+          "For this project, I imagined a shipwreck broken in two, resting on a rock at the bottom of the ocean. The idea was to create an immersive, spectacular scene that evokes underwater exploration. This choice also had a logistical advantage: it allowed us to <strong>recycle the wood</strong> from the previous year's decor (a Venetian gondola). I started by searching for <strong>inspiration images</strong>, then sketched and <strong>modeled the shipwreck in 3D</strong>."
+        ],
+        photos: [
+          { src: "/images/experiences/gala/inspiration.webp", alt: "Shipwreck inspiration" },
+          { src: "/images/experiences/gala/model-3d.webp", alt: "Shipwreck 3D model" },
+          { src: "/images/experiences/gala/structure-3d.webp", alt: "Shipwreck structure 3D model" },
+          { src: "/images/experiences/gala/print-3d.webp", alt: "3D print of the shipwreck structure" },
+          { src: "/images/experiences/gala/blueprints.webp", alt: "Shipwreck frame plans" },
+        ],
+      },
+      {
+        heading: "Modeling Objectives and Construction",
+        text: [
+          "The 3D model served several purposes: obtaining <strong>precise blueprints</strong> for construction, estimating the <strong>total weight</strong> of the structure, calculating the number of <strong>battens</strong> needed, and determining the <strong>surface area to be fireproofed</strong> to comply with safety standards. Once the model was validated, I exported the structure to <strong>3D print it</strong>, which allowed me to visualize the proportions and have a scale <strong>physical prototype</strong>.",
+          "The construction phase began with <strong>cutting the battens</strong> to exact dimensions, optimizing wood scraps to limit waste. I then assembled the shipwreck's skeleton, starting with the <strong>frames</strong> (transverse structures perpendicular to the length of the boat), then the <strong>ribbands</strong> (longitudinal battens) to connect everything. This framework was then covered with <strong>boards salvaged from pallets</strong>, which I disassembled and nailed one by one to give the shipwreck its final look."
+        ],
+        photos: [
+          { src: "/images/experiences/gala/wood-cutting.webp", alt: "Cut wooden battens" },
+          { src: "/images/experiences/gala/frame-assembly.webp", alt: "Assembled frames" },
+          { src: "/images/experiences/gala/skeleton-building.webp", alt: "Start of frame assembly" },
+          { src: "/images/experiences/gala/wooden-skeleton.webp", alt: "Finished wooden frame" },
+          { src: "/images/experiences/gala/pallet-cladding.webp", alt: "Cladding with pallet boards" },
+          { src: "/images/experiences/gala/support-base.webp", alt: "Wooden base to elevate the half wreck" },
+        ],
+      },
+      {
+        heading: "Staging and Final Result",
+        text: [
+          "To stage the wreck, I built an <strong>elevated wooden base</strong>, giving each half the <strong>desired tilt</strong>, as if it had broken on a rock. The base was covered with a <strong>textured grey sheet</strong> to simulate underwater rock. The final result offered an immersive, photogenic decor consistent with the theme, while emphasizing materials reuse and a rigorous technical approach.",
+          "This project allowed me to mobilize a variety of skills: <strong>project management</strong>, <strong>3D modeling</strong>, <strong>logistical optimization</strong>, <strong>woodworking</strong>, and above all, <strong>creativity</strong>. It was also an opportunity to collaborate with other Gala teams, coordinate deliveries and installations, and manage last-minute contingencies. An intense, demanding, but deeply rewarding experience."
+        ],
+        photos: [
+          { src: "/images/experiences/gala/final-decor.webp", alt: "Completed decor" },
+          { src: "/images/experiences/gala/lit-decor.webp", alt: "Completed decor lit up" },
+          { src: "/images/experiences/gala/official-photo.webp", alt: "Official Gala photo" },
+        ],
+      },
+    ];
+---
+
+<BaseLayout {title} description={isFr ? "Conception et construction d'une structure scénographique pour le gala de l'école." : "Designing and building a scenographic structure for the school gala."} image="/images/experiences/gala/lit-decor.webp">
+  <article class="container gala">
+    <a class="exp-back muted" href={isFr ? "/experiences" : "/en/experiences"}>
+      &larr; {isFr ? "Expériences" : "Experiences"}
+    </a>
+
+    <header class="gala__head reveal">
+      <p class="eyebrow">
+        {isFr ? "Investissement associatif · IMT Mines Alès · 2024" : "Student association involvement · IMT Mines Alès · 2024"}
+      </p>
+      <h1 class="display gala__title">
+        {isFr ? "Responsable décors du 97ème Gala" : "Decor Manager for the 97th Gala"}
+      </h1>
+    </header>
+
+    {
+      (() => {
+        let photoSectionIndex = 0;
+        return sections.map((s, i) => {
+          const hasPhotos = s.photos && s.photos.length > 0;
+          const photoCount = s.photos ? s.photos.length : 0;
+          let isAlt = false;
+          if (hasPhotos) {
+            isAlt = photoSectionIndex % 2 !== 0;
+            photoSectionIndex++;
+          }
+
+          return (
+            <section 
+              class={`gala__row ${!hasPhotos ? "gala__row--no-media" : ""} ${hasPhotos ? `gala__row--photos-${photoCount}` : ""} ${isAlt ? "gala__row--alt" : ""} reveal`} 
+              style={`transition-delay:${i * 80}ms`}
+            >
+              <div class="gala__content">
+                <h2 class="gala__sh">{s.heading}</h2>
+                {s.text.map((p) => (
+                  <p class="gala__text" set:html={p} />
+                ))}
+              </div>
+              
+              {s.photos && s.photos.length === 5 && (
+                <div class="gala__media gala__media--5">
+                  {s.photos.map((p) => (
+                    <img src={p.src} alt={p.alt} loading="lazy" decoding="async" />
+                  ))}
+                </div>
+              )}
+              
+              {s.photos && s.photos.length === 6 && (
+                <div class="gala__media gala__media--6">
+                  {s.photos.map((p) => (
+                    <img src={p.src} alt={p.alt} loading="lazy" decoding="async" />
+                  ))}
+                </div>
+              )}
+              
+              {s.photos && s.photos.length === 3 && (
+                <div class="gala__media gala__media--3">
+                  <div class="gala__main-img">
+                    <img src={s.photos[0].src} alt={s.photos[0].alt} loading="lazy" decoding="async" />
+                  </div>
+                  <div class="gala__sub-grid-2">
+                    {s.photos.slice(1).map((p) => (
+                      <img src={p.src} alt={p.alt} loading="lazy" decoding="async" />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
+          );
+        });
+      })()
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .eyebrow::before {
+    display: none;
+  }
+  .gala {
+    padding-top: calc(var(--nav-h) + clamp(1.5rem, 4vw, 3rem));
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+  }
+  .exp-back {
+    display: inline-flex;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    transition: color var(--dur-fast) var(--ease);
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .exp-back:hover { color: var(--accent); }
+  
+  .gala__head {
+    max-width: 60ch;
+    display: flex; flex-direction: column; gap: 0.85rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .gala__title { font-size: var(--text-4xl); }
+  
+  .gala__sh {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3);
+    margin-bottom: 0.85rem;
+  }
+  .gala__text {
+    font-size: var(--text-base); line-height: 1.7; color: var(--ink-2);
+    max-width: 68ch; margin-bottom: 1.5rem;
+  }
+  .gala__text:last-of-type {
+    margin-bottom: 0;
+  }
+  
+  /* Rows & Columns Alternating Layout */
+  .gala__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  .gala__row--alt {
+    flex-direction: row-reverse;
+  }
+  .gala__row--no-media {
+    justify-content: flex-start;
+  }
+  .gala__row--no-media .gala__content {
+    flex: 1;
+    max-width: 100%;
+  }
+  .gala__row--no-media .gala__text {
+    max-width: 100%;
+  }
+  
+  /* Layout proportions for Gala pages */
+  /* 5 photos */
+  .gala__row--photos-5 .gala__content {
+    flex: 1.1;
+  }
+  .gala__row--photos-5 .gala__media {
+    flex: 0.9;
+  }
+  /* 6 photos */
+  .gala__row--photos-6 .gala__content {
+    flex: 1.1;
+  }
+  .gala__row--photos-6 .gala__media {
+    flex: 0.9;
+  }
+  /* 3 photos */
+  .gala__row--photos-3 .gala__content {
+    flex: 1.15;
+  }
+  .gala__row--photos-3 .gala__media {
+    flex: 0.85;
+  }
+  
+  .gala__content {
+    flex: 1.1;
+    min-width: 0;
+  }
+  
+  /* Media Grid Container */
+  .gala__media {
+    min-width: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .gala__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hairline-2);
+    transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
+  }
+  .gala__media img:hover {
+    transform: scale(1.02);
+  }
+  
+  /* 3 Photos Layout (identical to UFRJ) */
+  .gala__media--3 {
+    grid-template-columns: 1.5fr 1fr;
+    aspect-ratio: 16/11;
+  }
+  .gala__media--3 .gala__main-img {
+    height: 100%;
+  }
+  .gala__media--3 .gala__sub-grid-2 {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  /* 5 Photos Layout: 2 top images (span 3), 3 bottom images (span 2) */
+  .gala__media--5 {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.75rem;
+  }
+  .gala__media--5 img:nth-child(1),
+  .gala__media--5 img:nth-child(2) {
+    grid-column: span 3;
+    aspect-ratio: 3/2;
+  }
+  .gala__media--5 img:nth-child(3),
+  .gala__media--5 img:nth-child(4),
+  .gala__media--5 img:nth-child(5) {
+    grid-column: span 2;
+    aspect-ratio: 1/1;
+  }
+
+  /* 6 Photos Layout: 3x2 grid */
+  .gala__media--6 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    aspect-ratio: 16/11;
+  }
+  
+  /* Mobile Responsive Adjustments */
+  @media (max-width: 900px) {
+    .gala__row {
+      gap: clamp(1.5rem, 4vw, 2.5rem);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .gala__row, .gala__row--alt {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1.5rem;
+      margin-bottom: clamp(2rem, 4vw, 3rem);
+    }
+    .gala__media {
+      aspect-ratio: auto;
+    }
+    .gala__media--3 {
+      aspect-ratio: auto;
+      grid-template-columns: 1fr;
+    }
+    .gala__media--3 .gala__sub-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+      gap: 0.5rem;
+    }
+    .gala__media img {
+      aspect-ratio: 4/3;
+    }
+    .gala__media--5 {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+    }
+    .gala__media--5 img:nth-child(1),
+    .gala__media--5 img:nth-child(2) {
+      grid-column: span 3;
+      aspect-ratio: 3/2;
+    }
+    .gala__media--5 img:nth-child(3),
+    .gala__media--5 img:nth-child(4),
+    .gala__media--5 img:nth-child(5) {
+      grid-column: span 2;
+      aspect-ratio: 1/1;
+    }
+    .gala__media--6 {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      aspect-ratio: 3/2;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gala__media--5 {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+    .gala__media--5 img {
+      grid-column: span 1;
+      aspect-ratio: 4/3;
+    }
+    .gala__media--5 img:nth-child(5) {
+      grid-column: span 2;
+    }
+    .gala__media--6 {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      aspect-ratio: auto;
+    }
+    .gala__media--6 img {
+      aspect-ratio: 4/3;
+    }
+  }
+</style>

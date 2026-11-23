@@ -1,0 +1,31 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { ArrowLeft } from "@phosphor-icons/react";
+---
+
+<BaseLayout title="404 - Romain Sebire" description="Page not found.">
+  <section class="container not-found">
+    <p class="eyebrow">Error 404</p>
+    <h1 class="display not-found__title">Page not found.</h1>
+    <p class="lead">This page doesn't exist or has been moved.</p>
+    <a class="btn btn--primary" href="/en/">
+      <ArrowLeft weight="bold" />
+      Back to home
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: calc(100svh - var(--nav-h) - 8rem);
+    padding-top: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem));
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 55ch;
+  }
+  .not-found__title {
+    font-size: var(--text-4xl);
+  }
+</style>

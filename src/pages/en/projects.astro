@@ -1,0 +1,271 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ProjectCard from "@components/ProjectCard.astro";
+import { getProjects } from "@lib/projects";
+import { getLangFromUrl, useTranslations, taxonomy } from "@i18n/ui";
+import { X } from "@phosphor-icons/react";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+
+const filters = [
+  { key: "all", label: t("projects.filter.all") },
+  { key: "dl", label: t("projects.filter.dl") },
+  { key: "ml", label: t("projects.filter.ml") },
+  { key: "dev", label: t("projects.filter.dev") },
+] as const;
+
+const title = `${t("projects.title")} - Romain Sebire`;
+---
+
+<BaseLayout title={title} description={t("projects.intro")}>
+  <section class="container projects">
+    <header class="projects__head reveal">
+      <h1 class="display projects__title">{t("projects.title")}</h1>
+      <p class="lead">{t("projects.intro")}</p>
+    </header>
+
+    <div class="projects__filters reveal" role="group" aria-label={t("projects.title")}>
+      {
+        filters.map((f, i) => (
+          <button
+            class="chip pfilter"
+            type="button"
+            data-filter={f.key}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >
+            {f.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- Active Domain Banner -->
+    <div
+      class="active-domain reveal"
+      id="active-domain-banner"
+      data-taxonomy={JSON.stringify(taxonomy)}
+      data-lang={lang}
+      hidden
+    >
+      <div class="active-domain__body">
+        <span class="active-domain__label">{t("projects.filter.active")}</span>
+        <span class="chip chip--active" id="active-domain-chip"></span>
+      </div>
+      <button class="btn-clear-domain" id="clear-domain-filter" type="button" aria-label="Clear filter">
+        <X weight="bold" />
+      </button>
+    </div>
+
+    <div class="projects__grid" id="projects-grid">
+      {projects.map((project, i) => <ProjectCard project={project} lang={lang} index={i} />)}
+    </div>
+
+    <p class="projects__empty muted" hidden>{t("projects.empty")}</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .projects {
+    padding-top: calc(var(--nav-h) + clamp(2.5rem, 6vw, 5rem));
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+  }
+  .projects__head {
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .projects__head .lead {
+    max-width: none;
+  }
+  .projects__title {
+    font-size: var(--text-4xl);
+  }
+  .projects__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding-bottom: 0.25rem;
+  }
+  .projects__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .projects__empty {
+    margin-top: 3rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  :global(.pcard.is-filtered-out) {
+    display: none !important;
+  }
+  .active-domain {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    padding: 0.5rem 0.75rem 0.5rem 1.25rem;
+    background: var(--bg-2);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+    animation: fadeIn 0.25s var(--ease) forwards;
+  }
+  .active-domain[hidden] {
+    display: none !important;
+  }
+  .active-domain__body {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .active-domain__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-3);
+  }
+  .chip--active {
+    background: var(--accent-tint);
+    color: var(--accent);
+    border-color: var(--accent);
+    pointer-events: none;
+    font-weight: 500;
+  }
+  .btn-clear-domain {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: var(--radius-pill);
+    border: none;
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  }
+  .btn-clear-domain:hover {
+    color: var(--ink);
+    background: var(--hairline);
+  }
+  .btn-clear-domain svg {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  function initProjectFilters() {
+    const root = document.getElementById("projects-grid");
+    if (!root) return;
+
+    if (root.dataset.bound === "1") {
+      applyFilters();
+      return;
+    }
+    root.dataset.bound = "1";
+
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(".pfilter"));
+    const clearBtn = document.getElementById("clear-domain-filter") as HTMLButtonElement | null;
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        buttons.forEach((b) => {
+          b.setAttribute("aria-pressed", String(b === btn));
+        });
+
+        const url = new URL(window.location.href);
+        if (url.searchParams.has("domain")) {
+          url.searchParams.delete("domain");
+          window.history.replaceState({}, "", url.pathname + url.search);
+        }
+
+        applyFilters();
+      });
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("domain");
+        window.history.replaceState({}, "", url.pathname + url.search);
+        applyFilters();
+      });
+    }
+
+    applyFilters();
+
+    function applyFilters() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const domainParam = urlParams.get("domain");
+
+      const banner = document.getElementById("active-domain-banner");
+      const chip = document.getElementById("active-domain-chip");
+
+      let activeDomain: string | null = null;
+
+      if (banner) {
+        const taxonomy = JSON.parse(banner.dataset.taxonomy ?? "{}");
+        const lang = banner.dataset.lang ?? "fr";
+
+        if (domainParam && Object.prototype.hasOwnProperty.call(taxonomy, domainParam)) {
+          activeDomain = domainParam;
+          if (chip) {
+            chip.textContent = taxonomy[domainParam][lang];
+          }
+          banner.removeAttribute("hidden");
+          buttons.forEach((btn) => {
+            const isAll = (btn.dataset.filter ?? "all") === "all";
+            btn.setAttribute("aria-pressed", String(isAll));
+          });
+        } else {
+          banner.setAttribute("hidden", "");
+          if (domainParam) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("domain");
+            window.history.replaceState({}, "", url.pathname + url.search);
+          }
+        }
+      }
+
+      const pressedButton = buttons.find((btn) => btn.getAttribute("aria-pressed") === "true");
+      const currentCategory = pressedButton?.dataset.filter ?? "all";
+
+      const cards = Array.from(document.querySelectorAll<HTMLElement>(".pcard"));
+      const empty = document.querySelector<HTMLElement>(".projects__empty");
+
+      let visible = 0;
+      cards.forEach((card) => {
+        const categoryMatch = currentCategory === "all" || card.dataset.category === currentCategory;
+        const cardDomains = card.dataset.domains?.split(",") ?? [];
+        const domainMatch = !activeDomain || cardDomains.includes(activeDomain);
+
+        const show = categoryMatch && domainMatch;
+        card.classList.toggle("is-filtered-out", !show);
+        if (show) visible += 1;
+      });
+
+      if (empty) empty.hidden = visible !== 0;
+    }
+  }
+
+  initProjectFilters();
+  document.addEventListener("astro:page-load", initProjectFilters);
+</script>

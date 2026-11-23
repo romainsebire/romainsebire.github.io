@@ -1,0 +1,87 @@
+/* ==========================================================================
+   tokens.css — design tokens (single source of truth)
+   Concept: "Carnet de recherche" — editorial / technical / honest.
+   NOTE: accent is provisional (cobalt). Phase 1 produces 2 accent mockups
+   (cobalt vs terracotta) to compare on the hero before final lock.
+   ========================================================================== */
+
+:root {
+  /* ---- Color: neutral base (off-white, not beige) ---- */
+  --bg: #fafaf9;
+  --bg-2: #f3f3f1;
+  --surface: #ffffff;
+  --ink: #101010;
+  --ink-2: #3a3a38;
+  --ink-3: #6b6b67;
+  --hairline: rgba(16, 16, 16, 0.1);
+  --hairline-2: rgba(16, 16, 16, 0.06);
+
+  /* ---- Single locked accent: terracotta ---- */
+  --accent: #c8552d;
+  --accent-ink: #ffffff;
+  --accent-tint: rgba(200, 85, 45, 0.09);
+
+  /* ---- Typography (self-hosted via Fontsource) ---- */
+  --font-display: "Bricolage Grotesque Variable", "Geist Variable", system-ui, sans-serif;
+  --font-body: "Geist Variable", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
+  --text-xs: 0.78rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: clamp(2rem, 4vw, 2.75rem);
+  --text-4xl: clamp(2.5rem, 6vw, 4rem);
+  --text-5xl: clamp(3rem, 9vw, 6.5rem);
+
+  /* ---- Spacing scale ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---- Radius (one scale, consistent) ---- */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* ---- Elevation: soft, tinted to background ---- */
+  --shadow-sm: 0 1px 2px rgba(16, 16, 16, 0.04);
+  --shadow: 0 8px 30px -12px rgba(16, 16, 16, 0.18);
+  --shadow-lg: 0 24px 60px -24px rgba(16, 16, 16, 0.22);
+
+  /* ---- Motion: custom easing (no linear / ease-in-out) ---- */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 0.2s;
+  --dur: 0.45s;
+  --dur-slow: 0.7s;
+
+  /* ---- Layout ---- */
+  --container: 1200px;
+  --container-wide: 1360px;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+  --nav-h: 76px;
+}
+
+/* Accent candidates to compare on the hero before final lock (Phase 1).
+   Apply via [data-accent="..."] on a wrapper. Default :root = cobalt. */
+[data-accent="cobalt"] {
+  --accent: #1f3df0;
+  --accent-ink: #ffffff;
+  --accent-tint: rgba(31, 61, 240, 0.08);
+}
+[data-accent="terracotta"] {
+  --accent: #c8552d;
+  --accent-ink: #ffffff;
+  --accent-tint: rgba(200, 85, 45, 0.09);
+}

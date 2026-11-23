@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Home from "@components/Home.astro";
+import { getLangFromUrl, useTranslations } from "@i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`Romain Sebire - ${t("home.role")}`}
+  description={t("home.statement")}
+>
+  <Home lang={lang} />
+</BaseLayout>

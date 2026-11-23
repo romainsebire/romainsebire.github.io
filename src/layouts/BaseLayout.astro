@@ -1,0 +1,139 @@
+---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
+import "@styles/tokens.css";
+import "@styles/global.css";
+import "@styles/components.css";
+import { ViewTransitions } from "astro:transitions";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import ChatWidget from "@components/ChatWidget.astro";
+import { getLangFromUrl, useTranslations, getAltLangUrl } from "@i18n/ui";
+import { site } from "@config/site";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** OG/Twitter share image (absolute path from site root). */
+  image?: string;
+}
+
+const { title, description = "", image = "/images/og-cover.png" } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const altUrl = new URL(getAltLangUrl(Astro.url), site.url).href;
+const altLang = lang === "fr" ? "en" : "fr";
+const ogImage = new URL(image, site.url).href;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={lang} href={canonical} />
+    <link rel="alternate" hreflang={altLang} href={altUrl} />
+    <link rel="alternate" hreflang="x-default" href={site.url} />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    {image === "/images/og-cover.png" && (
+      <>
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/png" />
+      </>
+    )}
+    <meta property="og:locale" content={lang === "fr" ? "fr_FR" : "en_US"} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Analytics Umami -->
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="2dbc4979-17c7-400e-af8e-25b5f329b3e7"
+      is:inline
+    ></script>
+
+    <ViewTransitions />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t("nav.skipToContent")}</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <ChatWidget />
+
+    <script>
+      function initReveal() {
+        // Clean up any elements that already have both classes (e.g., from cache/history restoration)
+        const visibleEls = document.querySelectorAll<HTMLElement>(".reveal.is-visible");
+        visibleEls.forEach((el) => {
+          el.classList.remove("reveal", "is-visible");
+          el.style.transitionDelay = "";
+        });
+
+        const els = document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)");
+        if (!("IntersectionObserver" in window) || els.length === 0) {
+          els.forEach((el) => {
+            el.classList.add("is-visible");
+            el.classList.remove("reveal", "is-visible");
+            el.style.transitionDelay = "";
+          });
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const el = entry.target as HTMLElement;
+                el.classList.add("is-visible");
+                obs.unobserve(el);
+
+                // Clean up reveal classes and inline delays after transition ends
+                const cleanup = () => {
+                  el.classList.remove("reveal", "is-visible");
+                  el.style.transitionDelay = "";
+                };
+                el.addEventListener("transitionend", cleanup, { once: true });
+                // Fallback (total transition time is max 700ms dur + 350ms delay = 1050ms)
+                setTimeout(cleanup, 1500);
+              }
+            });
+          },
+          { rootMargin: "0px 0px 0px 0px", threshold: 0 },
+        );
+        els.forEach((el) => io.observe(el));
+      }
+
+      initReveal();
+      document.addEventListener("astro:page-load", initReveal);
+    </script>
+  </body>
+</html>
